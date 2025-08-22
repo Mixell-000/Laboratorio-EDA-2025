@@ -1,0 +1,160 @@
+import java.util.*;
+
+import java.util.*;
+
+class AnalizadorDeNotas {
+    // atributos
+    private double[][] notas; //[Estudiante][evaluacion]
+    private String[] evaluaciones;
+    private int[] rut;
+    private int cantEstudiantes;
+    private int cantEvaluaciones;
+
+    // constructor 1
+    public AnalizadorDeNotas(int estudiantes, int evaluaciones) {
+        this.cantEstudiantes = estudiantes;
+        this.cantEvaluaciones = evaluaciones;
+        this.notas = new double[estudiantes][evaluaciones];
+        this.evaluaciones = new String[evaluaciones];
+        this.rut = new int[estudiantes];
+    }
+    // constructor 2
+    public AnalizadorDeNotas(int estudiantes, int evaluaciones, String[] nombresEvaluaciones) {
+        this(estudiantes, evaluaciones);
+        this.evaluaciones = nombresEvaluaciones;
+    }
+
+    // Metodos
+    public double calcularPromedioEstudiante(int numEstudiante) {//listo
+        
+        double suma = 0;
+        
+        for(int  i=0 ; i<cantEvaluaciones;i++){
+            suma += notas[numEstudiante][i];
+        }
+        return suma/cantEvaluaciones;
+    }//listo
+
+    public double calcularPromedioEvaluacion(int index) {
+        double suma = 0;
+        
+        for(int  i=0 ; i<cantEvaluaciones;i++){
+            suma += notas[i][index];
+        }
+        return suma/cantEstudiantes;
+    }//listo
+
+    public double calcularVarianzaEvaluacion(int index) {
+        
+        double promedio = 0;
+        double suma = 0;
+        
+        for(int  i=0 ; i<cantEstudiantes;i++){
+            promedio += notas[i][index];
+            
+            
+            
+        }
+        promedio = promedio/cantEstudiantes;
+          for(int  i=0 ; i<cantEstudiantes;i++){
+            suma += Math.pow((notas[i][index] - promedio) , 2);
+        }
+        suma = suma/cantEstudiantes;
+        
+
+        return suma;
+    }//listo
+
+    public double[] calcularPromedioEstudiantes() {
+        
+        double[] promedio = new double[cantEstudiantes];
+        
+        for(int i=0 ; i<cantEstudiantes ; i++){
+            double suma = 0;
+            for(int j=0 ; j<cantEvaluaciones ; j++){
+                suma += notas[i][j];
+            }
+            promedio[i] = suma/cantEvaluaciones;
+        }
+        return promedio;
+    }//listo
+
+    public double[] calcularVarianzaEstudiantes() {
+        
+        double[] varianzaA = new double[cantEstudiantes];
+        
+        for(int  i=0 ; i<cantEstudiantes;i++){
+            double suma = 0;
+            double promedio = 0;
+            for(int j=0 ; j<cantEvaluaciones ; j++){
+                promedio += notas[i][j];
+            }
+            
+        promedio = promedio/cantEvaluaciones;
+        
+            for(int k = 0 ; k<cantEvaluaciones; k++){
+            suma += Math.pow((notas[i][k] - promedio) , 2);
+        }
+            varianzaA[i] = suma / cantEvaluaciones;
+        }
+ 
+        return varianzaA;
+    }//listo
+
+    public double[] calcularPromedioEvaluaciones(String[] evaluacionesSeleccionadas) {
+    double[] promedios = new double[cantEstudiantes];
+
+    for (int i = 0; i < cantEstudiantes; i++) {
+        double suma = 0;
+
+        for (String evalNombre : evaluacionesSeleccionadas) {
+            int indice = -1;
+
+            for (int j = 0; j < this.evaluaciones.length; j++) {
+                if (this.evaluaciones[j].equals(evalNombre)) {
+                    indice = j;
+                    break;
+                }
+            }
+
+            if (indice == -1) {
+                throw new IllegalArgumentException(
+                    "Evaluación no encontrada: " + evalNombre
+                );
+            }
+
+            suma += notas[i][indice];
+        }
+
+        promedios[i] = suma / evaluacionesSeleccionadas.length;
+    }
+
+    return promedios;
+}//listo
+
+    public String encontrarMaximo(int index) {
+        
+        int indicenotaMAX = 0;
+        double notaMAX = 0;
+        
+        for(int i=0 ; i<cantEstudiantes ; i++){
+            if(notaMAX < notas[i][index]){
+                
+                notaMAX = notas[i][index];
+                indicenotaMAX = i;
+            }
+        }
+        
+        return String.valueOf(rut[indicenotaMAX]);
+    }//listo
+}
+
+
+public class Main {
+    
+    
+    public static void main(String[] args){
+        
+}
+
+}
