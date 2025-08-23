@@ -2,11 +2,11 @@ import java.util.*;
 
 class AnalizadorDeNotas {
     // atributos
-    private double[][] notas; //[Estudiante][evaluacion]
-    private String[] evaluaciones;
-    private int[] rut;
-    private int cantEstudiantes;
-    private int cantEvaluaciones;
+    double[][] notas; //[Estudiante][evaluacion]
+    String[] evaluaciones;
+    int[] rut;
+    int cantEstudiantes;
+    int cantEvaluaciones;
 
     // constructor 1
     public AnalizadorDeNotas(int estudiantes, int evaluaciones) {
