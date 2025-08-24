@@ -323,7 +323,7 @@ public class Main {
     case 7:
         System.out.print("Ingrese índice de la evaluación (1 a " + (evaluaciones) + "): ");
         eval = sc.nextInt() - 1;
-        System.out.println("RUT del mejor en evaluación " + eval + ": " + analizador.encontrarMaximo(eval));
+        System.out.println("RUT del mejor en evaluación " + (eval + 1) + ": " + analizador.encontrarMaximo(eval));
         break;
 
     case 8:
