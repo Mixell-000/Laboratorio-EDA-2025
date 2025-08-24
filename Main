@@ -30,7 +30,7 @@ class AnalizadorDeNotas {
         this.rut[i] = 1 + i; // RUT
         for (int j = 0; j < evaluaciones; j++) {
             double randomValue = rand.nextDouble();  // número [0.0, 1.0]
-            this.notas[i][j] = Math.round(randomValue * 70) / 10.0; // escalar a [0.0, 7.0]
+            this.notas[i][j] = Math.round((rand.nextDouble() * 6 + 1) * 10.0) / 10.0; // escalar a [1.0, 7.0]
         }
     }
         
@@ -57,13 +57,14 @@ class AnalizadorDeNotas {
     }//listo
 
     public double calcularPromedioEvaluacion(int index) {
-        double suma = 0;
-        
-        for(int  i=0 ; i<cantEvaluaciones;i++){
-            suma += notas[i][index];
-        }
-        return suma/cantEstudiantes;
-    }//listo
+    double suma = 0;
+
+    for (int i = 0; i < cantEstudiantes; i++) {
+        suma += notas[i][index];
+    }
+
+    return suma / cantEstudiantes;
+}//listo
 
     public double calcularVarianzaEvaluacion(int index) {
         
@@ -101,8 +102,17 @@ class AnalizadorDeNotas {
     }  *//* metodo sin optimizar*/
     
     public double[] calcularPromedioEstudiantes() {
-        return promediosEstudiantes;
+    double[] promedio = new double[cantEstudiantes];
+    for(int i = 0; i < cantEstudiantes; i++) {
+        double suma = 0;
+        for(int j = 0; j < cantEvaluaciones; j++) {
+            suma += notas[i][j];
+        }
+        promedio[i] = suma / cantEvaluaciones;
     }
+    return promedio;
+}
+
 
     public double[] calcularVarianzaEstudiantes() {
         
@@ -188,7 +198,6 @@ class AnalizadorDeNotas {
     return resultado;
 }
 
-
     public String encontrarMaximo(int index) {
         
         int indicenotaMAX = 0;
@@ -204,13 +213,34 @@ class AnalizadorDeNotas {
         
         return String.valueOf(rut[indicenotaMAX]);
     }//listo
+    
+    public void imprimirRutYNotas() {
+    System.out.println("* _ _ _ _ _ _ _ _ _ _ _ _ *");
+    System.out.printf("%-8s", "RUT"); // encabezado con espacio fijo
+
+
+    for (String eval : evaluaciones) {
+        System.out.printf("%6s", eval);
+    }
+    System.out.println();
+
+    // Filas con RUTs y notas
+    for (int i = 0; i < cantEstudiantes; i++) {
+        System.out.printf("%-8d", rut[i]); // RUT alineado a la izquierda
+
+        for (int j = 0; j < cantEvaluaciones; j++) {
+            System.out.printf("%6.1f", notas[i][j]);
+        }
+        System.out.println();
+    }
+}//imprimir la matriz, basicamente ruts y notas por cada rut
 }
 
 public class Main {
     public static void main(String[] args){
         Scanner sc = new Scanner(System.in);
 
-        System.out.println("=== Sistema Analizador de Notas ===");
+        System.out.println("* _ _ _ _ *Sistema Analizador de Notas* _ _ _ _ *");
         System.out.print("Ingrese cantidad de estudiantes: ");
         int estudiantes = sc.nextInt();
         System.out.print("Ingrese cantidad de evaluaciones: ");
@@ -220,7 +250,7 @@ public class Main {
 
         int opcion;
         do {
-            System.out.println("\n--- Menú ---");
+            System.out.println("* _ _ _ _ *Menú* _ _ _ _ *");
             System.out.println("1. Mostrar promedio de un estudiante");
             System.out.println("2. Mostrar promedio de una evaluación");
             System.out.println("3. Mostrar varianza de una evaluación");
@@ -228,62 +258,87 @@ public class Main {
             System.out.println("5. Mostrar varianzas de todos los estudiantes");
             System.out.println("6. Mostrar promedio de evaluaciones seleccionadas");
             System.out.println("7. Mostrar RUT con la mejor nota en una evaluación");
-            System.out.println("8. Salir");
+            System.out.println("8. Mostrar RUTs y respectivas notas");
+            System.out.println("9. Salir");
             System.out.print("Seleccione una opción: ");
             opcion = sc.nextInt();
 
             switch(opcion) {
-                case 1:
-                    System.out.print("Ingrese índice del estudiante (1 a " + (estudiantes) + "): ");
-                    int est = sc.nextInt();
-                    System.out.println("Promedio estudiante " + est + ": " + analizador.calcularPromedioEstudiante(est));
-                    break;
+    case 1:
+        System.out.print("Ingrese índice del estudiante (1 a " + (estudiantes) + "): ");
+        int est = sc.nextInt();
+        System.out.println("Promedio estudiante " + est + ": " + analizador.calcularPromedioEstudiante(est));
+        break;
 
-                case 2:
-                    System.out.print("Ingrese índice de la evaluación (1 a " + (evaluaciones) + "): ");
-                    int eval = sc.nextInt();
-                    System.out.println("Promedio evaluación " + eval + ": " + analizador.calcularPromedioEvaluacion(eval));
-                    break;
+    case 2:
+    System.out.print("Ingrese índice de la evaluación (1 a " + evaluaciones + "): ");
+    int eval = sc.nextInt() - 1; // Ajustar a índice base 0
+    if (eval >= 0 && eval < evaluaciones) {
+        double promedio = analizador.calcularPromedioEvaluacion(eval);
+        System.out.println("Promedio de la evaluación S-" + (eval + 1) + ": " + promedio);
+    } else {
+        System.out.println("Índice inválido.");
+    }
+    break;
 
-                case 3:
-                    System.out.print("Ingrese índice de la evaluación (1 a " + (evaluaciones) + "): ");
-                    eval = sc.nextInt();
-                    System.out.println("Varianza evaluación " + eval + ": " + analizador.calcularVarianzaEvaluacion(eval));
-                    break;
 
-                case 4:
-                    System.out.println("Promedios de todos los estudiantes:");
-                    System.out.println(Arrays.toString(analizador.calcularPromedioEstudiantes()));
-                    break;
+    case 3:
+        System.out.print("Ingrese índice de la evaluación (1 a " + (evaluaciones) + "): ");
+        eval = sc.nextInt() - 1;
+        System.out.println("Varianza evaluación " + eval + ": " + analizador.calcularVarianzaEvaluacion(eval));
+        break;
 
-                case 5:
-                    System.out.println("Varianzas de todos los estudiantes:");
-                    System.out.println(Arrays.toString(analizador.calcularVarianzaEstudiantes()));
-                    break;
+    case 4:
+    System.out.println("Promedios de todos los estudiantes:");
+    double[] promedios = analizador.calcularPromedioEstudiantes();
+    for (int i = 0; i < estudiantes; i++) {
+        System.out.println("RUT " + analizador.rut[i] + ": " + promedios[i]);
+    }
+    break;
 
-                case 6:
-                    sc.nextLine(); // limpiar buffer
-                    System.out.print("Ingrese nombres de evaluaciones separados por coma: ");
-                    String linea = sc.nextLine();
-                    String[] seleccion = linea.split(",");
-                    System.out.println("Promedios en las evaluaciones seleccionadas:");
-                    System.out.println(Arrays.toString(analizador.calcularPromedioEvaluaciones(seleccion)));
-                    break;
 
-                case 7:
-                    System.out.print("Ingrese índice de la evaluación (1 a " + (evaluaciones) + "): ");
-                    eval = sc.nextInt();
-                    System.out.println("RUT del mejor en evaluación " + eval + ": " + analizador.encontrarMaximo(eval));
-                    break;
+    case 5:
+    System.out.println("Varianzas de todos los estudiantes:");
+    double[] varianzas = analizador.calcularVarianzaEstudiantes();
+    for (int i = 0; i < estudiantes; i++) {
+        System.out.println("RUT " + analizador.rut[i] + ": " + varianzas[i]);
+    }
+    break;
 
-                case 8:
-                    System.out.println("Saliendo...");
-                    break;
 
-                default:
-                    System.out.println("Opción no válida.");
-            }
-        } while(opcion != 8);
+    case 6:
+    sc.nextLine(); // limpiar buffer
+    System.out.print("Ingrese nombres de evaluaciones separados por coma y respetando mayusculas (ej: S1,S3): ");
+    String linea = sc.nextLine();
+    String[] seleccion = linea.split(",");
+    double[] promediosSel = analizador.calcularPromedioEvaluaciones(seleccion);
+
+    System.out.println("Promedios en las evaluaciones seleccionadas:");
+    for (int i = 0; i < estudiantes; i++) {
+        System.out.println("RUT " + analizador.rut[i] + ": " + promediosSel[i]);
+    }
+    break;
+
+
+    case 7:
+        System.out.print("Ingrese índice de la evaluación (1 a " + (evaluaciones) + "): ");
+        eval = sc.nextInt() - 1;
+        System.out.println("RUT del mejor en evaluación " + eval + ": " + analizador.encontrarMaximo(eval));
+        break;
+
+    case 8:
+        System.out.println("RUT y notas de todos los estudiantes:");
+        analizador.imprimirRutYNotas();
+        break;
+
+    case 9:
+        System.out.println("");
+        break;
+
+    default:
+        System.out.println("Opción no válida.");
+}
+        } while(opcion != 9);
 
         sc.close();
     }
