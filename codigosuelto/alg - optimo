@@ -7,6 +7,8 @@ class AnalizadorDeNotas {
     int[] rut;
     int cantEstudiantes;
     int cantEvaluaciones;
+    double[] promediosEstudiantes;
+    double[] promediosEvaluaciones;
 
     // constructor 1
     public AnalizadorDeNotas(int estudiantes, int evaluaciones) {
@@ -84,7 +86,7 @@ class AnalizadorDeNotas {
         return suma;
     }//listo
 
-    public double[] calcularPromedioEstudiantes() {
+    /*public double[] calcularPromedioEstudiantes() {
         
         double[] promedio = new double[cantEstudiantes];
         
@@ -96,7 +98,11 @@ class AnalizadorDeNotas {
             promedio[i] = suma/cantEvaluaciones;
         }
         return promedio;
-    }//listo
+    }  *//* metodo sin optimizar*/
+    
+    public double[] calcularPromedioEstudiantes() {
+        return promediosEstudiantes;
+    }
 
     public double[] calcularVarianzaEstudiantes() {
         
@@ -120,7 +126,7 @@ class AnalizadorDeNotas {
         return varianzaA;
     }//listo
 
-    public double[] calcularPromedioEvaluaciones(String[] evaluacionesSeleccionadas) {
+    /*public double[] calcularPromedioEvaluaciones(String[] evaluacionesSeleccionadas) {
     double[] promedios = new double[cantEstudiantes];
 
     for (int i = 0; i < cantEstudiantes; i++) {
@@ -149,7 +155,39 @@ class AnalizadorDeNotas {
     }
 
     return promedios;
-}//listo
+} */ /*sin optimizar*/
+
+    public double[] calcularPromedioEvaluaciones(String[] evaluacionesSeleccionadas) {
+    double[] resultado = new double[cantEstudiantes];
+    int[] indices = new int[evaluacionesSeleccionadas.length];
+
+    // Paso 1: convertir nombres a índices una sola vez
+    for (int e = 0; e < evaluacionesSeleccionadas.length; e++) {
+        int idx = -1;
+        for (int j = 0; j < evaluaciones.length; j++) {
+            if (evaluaciones[j].equals(evaluacionesSeleccionadas[e])) {
+                idx = j;
+                break;
+            }
+        }
+        if (idx == -1) {
+            throw new IllegalArgumentException("Evaluación no encontrada: " + evaluacionesSeleccionadas[e]);
+        }
+        indices[e] = idx;
+    }
+
+    // Paso 2: recorrer estudiantes y calcular promedios solo con esos índices
+    for (int i = 0; i < cantEstudiantes; i++) {
+        double suma = 0;
+        for (int idx : indices) {
+            suma += notas[i][idx];
+        }
+        resultado[i] = suma / evaluacionesSeleccionadas.length;
+    }
+
+    return resultado;
+}
+
 
     public String encontrarMaximo(int index) {
         
