@@ -101,17 +101,25 @@ class AnalizadorDeNotas {
         return promedio;
     }  *//* metodo sin optimizar*/
     
-    public double[] calcularPromedioEstudiantes() {
-    double[] promedio = new double[cantEstudiantes];
-    for(int i = 0; i < cantEstudiantes; i++) {
+    
+public double[] calcularPromedioEstudiantes() {
+    //devolver directamente
+    if (promediosEstudiantes != null) {
+        return promediosEstudiantes;
+    }
+
+    //guardarlos
+    promediosEstudiantes = new double[cantEstudiantes];
+    for (int i = 0; i < cantEstudiantes; i++) {
         double suma = 0;
-        for(int j = 0; j < cantEvaluaciones; j++) {
+        for (int j = 0; j < cantEvaluaciones; j++) {
             suma += notas[i][j];
         }
-        promedio[i] = suma / cantEvaluaciones;
+        promediosEstudiantes[i] = suma / cantEvaluaciones;
     }
-    return promedio;
-}
+    return promediosEstudiantes;
+}//optimizada
+
 
 
     public double[] calcularVarianzaEstudiantes() {
