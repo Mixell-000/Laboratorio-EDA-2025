@@ -1,0 +1,329 @@
+import java.util.*;
+
+class AnalizadorDeNotas {
+    // atributos
+    double[][] notas; //[Estudiante][evaluacion]
+    String[] evaluaciones;
+    int[] rut;
+    int cantEstudiantes;
+    int cantEvaluaciones;
+    double[] promediosEstudiantes;
+    double[] promediosEvaluaciones;
+
+    // constructor 1
+    public AnalizadorDeNotas(int estudiantes, int evaluaciones) {
+        this.cantEstudiantes = estudiantes;
+        this.cantEvaluaciones = evaluaciones;
+        this.notas = new double[estudiantes][evaluaciones];
+        this.evaluaciones = new String[evaluaciones];
+        this.rut = new int[estudiantes];
+        
+         Random rand = new Random();
+
+    // Generar nombres de evaluaciones
+    for (int j = 0; j < evaluaciones; j++) {
+        this.evaluaciones[j] = "S" + (j + 1);
+    }
+
+    // Generar RUT y notas
+    for (int i = 0; i < estudiantes; i++) {
+        this.rut[i] = 1 + i; // RUT
+        for (int j = 0; j < evaluaciones; j++) {
+            double randomValue = rand.nextDouble();  // número [0.0, 1.0]
+            this.notas[i][j] = Math.round((rand.nextDouble() * 6 + 1) * 10.0) / 10.0; // escalar a [1.0, 7.0]
+        }
+    }
+        
+    }
+    // constructor 2
+    public AnalizadorDeNotas(int estudiantes, int evaluaciones, String[] nombresEvaluaciones) {
+    this(estudiantes, evaluaciones); // llama al constructor 1
+    if (nombresEvaluaciones.length == evaluaciones) {
+        this.evaluaciones = nombresEvaluaciones;
+    } else {
+        throw new IllegalArgumentException("Cantidad de nombres no coincide con evaluaciones");
+    }
+}
+
+    // Metodos
+    public double calcularPromedioEstudiante(int numEstudiante) {//listo
+        
+        double suma = 0;
+        
+        for(int  i=0 ; i<cantEvaluaciones;i++){
+            suma += notas[numEstudiante][i];
+        }
+        return suma/cantEvaluaciones;
+    }//listo
+
+    public double calcularPromedioEvaluacion(int index) {
+    double suma = 0;
+
+    for (int i = 0; i < cantEstudiantes; i++) {
+        suma += notas[i][index];
+    }
+
+    return suma / cantEstudiantes;
+}//listo
+
+    public double calcularVarianzaEvaluacion(int index) {
+        
+        double promedio = 0;
+        double suma = 0;
+        
+        for(int  i=0 ; i<cantEstudiantes;i++){
+            promedio += notas[i][index];
+            
+            
+            
+        }
+        promedio = promedio/cantEstudiantes;
+          for(int  i=0 ; i<cantEstudiantes;i++){
+            suma += Math.pow((notas[i][index] - promedio) , 2);
+        }
+        suma = suma/cantEstudiantes;
+        
+
+        return suma;
+    }//listo
+
+    /*public double[] calcularPromedioEstudiantes() {
+        
+        double[] promedio = new double[cantEstudiantes];
+        
+        for(int i=0 ; i<cantEstudiantes ; i++){
+            double suma = 0;
+            for(int j=0 ; j<cantEvaluaciones ; j++){
+                suma += notas[i][j];
+            }
+            promedio[i] = suma/cantEvaluaciones;
+        }
+        return promedio;
+    }  *//* metodo sin optimizar*/
+    
+    public double[] calcularPromedioEstudiantes() {
+    double[] promedio = new double[cantEstudiantes];
+    for(int i = 0; i < cantEstudiantes; i++) {
+        double suma = 0;
+        for(int j = 0; j < cantEvaluaciones; j++) {
+            suma += notas[i][j];
+        }
+        promedio[i] = suma / cantEvaluaciones;
+    }
+    return promedio;
+}
+
+
+    public double[] calcularVarianzaEstudiantes() {
+        
+        double[] varianzaA = new double[cantEstudiantes];
+        
+        for(int  i=0 ; i<cantEstudiantes;i++){
+            double suma = 0;
+            double promedio = 0;
+            for(int j=0 ; j<cantEvaluaciones ; j++){
+                promedio += notas[i][j];
+            }
+            
+        promedio = promedio/cantEvaluaciones;
+        
+            for(int k = 0 ; k<cantEvaluaciones; k++){
+            suma += Math.pow((notas[i][k] - promedio) , 2);
+        }
+            varianzaA[i] = suma / cantEvaluaciones;
+        }
+ 
+        return varianzaA;
+    }//listo
+
+    /*
+public double[] calcularPromedioEstudiantes() {
+    return promediosEstudiantes;
+}
+ */ // Versión OPTIMIZADA
+
+    public double[] calcularPromedioEvaluaciones(String[] evaluacionesSeleccionadas) {
+    double[] resultado = new double[cantEstudiantes];
+    int[] indices = new int[evaluacionesSeleccionadas.length];
+
+    // Paso 1: convertir nombres a índices una sola vez
+    for (int e = 0; e < evaluacionesSeleccionadas.length; e++) {
+        int idx = -1;
+        for (int j = 0; j < evaluaciones.length; j++) {
+            if (evaluaciones[j].equals(evaluacionesSeleccionadas[e])) {
+                idx = j;
+                break;
+            }
+        }
+        if (idx == -1) {
+            throw new IllegalArgumentException("Evaluación no encontrada: " + evaluacionesSeleccionadas[e]);
+        }
+        indices[e] = idx;
+    }
+
+    // Paso 2: recorrer estudiantes y calcular promedios solo con esos índices
+    for (int i = 0; i < cantEstudiantes; i++) {
+        double suma = 0;
+        for (int idx : indices) {
+            suma += notas[i][idx];
+        }
+        resultado[i] = suma / evaluacionesSeleccionadas.length;
+    }
+
+    return resultado;
+}/*sin optimizar*/
+
+    public String encontrarMaximo(int index) {
+        
+        int indicenotaMAX = 0;
+        double notaMAX = 0;
+        
+        for(int i=0 ; i<cantEstudiantes ; i++){
+            if(notaMAX < notas[i][index]){
+                
+                notaMAX = notas[i][index];
+                indicenotaMAX = i;
+            }
+        }
+        
+        return String.valueOf(rut[indicenotaMAX]);
+    }//listo
+    
+    public void imprimirRutYNotas() {
+    System.out.println("* _ _ _ _ _ _ _ _ _ _ _ _ *");
+    System.out.printf("%-8s", "RUT"); // encabezado con espacio fijo
+
+
+    for (String eval : evaluaciones) {
+        System.out.printf("%6s", eval);
+    }
+    System.out.println();
+
+    // Filas con RUTs y notas
+    for (int i = 0; i < cantEstudiantes; i++) {
+        System.out.printf("%-8d", rut[i]); // RUT alineado a la izquierda
+
+        for (int j = 0; j < cantEvaluaciones; j++) {
+            System.out.printf("%6.1f", notas[i][j]);
+        }
+        System.out.println();
+    }
+}//imprimir la matriz, basicamente ruts y notas por cada rut
+}
+
+public class Main {
+    public static void main(String[] args){
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("* _ _ _ _ *Sistema Analizador de Notas* _ _ _ _ *");
+        System.out.print("Ingrese cantidad de estudiantes: ");
+        int estudiantes = sc.nextInt();
+        System.out.print("Ingrese cantidad de evaluaciones: ");
+        int evaluaciones = sc.nextInt();
+
+        AnalizadorDeNotas analizador = new AnalizadorDeNotas(estudiantes, evaluaciones);
+
+        int opcion;
+        do {
+            System.out.println("* _ _ _ _ *Menú* _ _ _ _ *");
+            System.out.println("1. Mostrar promedio de un estudiante");
+            System.out.println("2. Mostrar promedio de una evaluación");
+            System.out.println("3. Mostrar varianza de una evaluación");
+            System.out.println("4. Mostrar promedios de todos los estudiantes");
+            System.out.println("5. Mostrar varianzas de todos los estudiantes");
+            System.out.println("6. Mostrar promedio de evaluaciones seleccionadas");
+            System.out.println("7. Mostrar RUT con la mejor nota en una evaluación");
+            System.out.println("8. Mostrar RUTs y respectivas notas");
+            System.out.println("9. Salir");
+            System.out.print("Seleccione una opción: ");
+            opcion = sc.nextInt();
+
+            switch(opcion) {
+    case 1:
+    System.out.print("Ingrese índice del estudiante (1 a " + (estudiantes) + "): ");
+    int est = sc.nextInt() - 1; // ajustar a índice base 0
+    long start = System.nanoTime();
+    double promedioEst = analizador.calcularPromedioEstudiante(est);
+    long end = System.nanoTime();
+    System.out.println("Promedio estudiante " + (est+1) + ": " + promedioEst);
+    System.out.println("Tiempo de ejecución: " + (end - start) + " ns");
+    break;
+
+    case 2:
+    System.out.print("Ingrese índice de la evaluación (1 a " + evaluaciones + "): ");
+    int eval = sc.nextInt() - 1; // Ajustar a índice base 0
+    if (eval >= 0 && eval < evaluaciones) {
+        double promedio = analizador.calcularPromedioEvaluacion(eval);
+        System.out.println("Promedio de la evaluación S-" + (eval + 1) + ": " + promedio);
+    } else {
+        System.out.println("Índice inválido.");
+    }
+    break;
+
+
+    case 3:
+        System.out.print("Ingrese índice de la evaluación (1 a " + (evaluaciones) + "): ");
+        eval = sc.nextInt() - 1;
+        System.out.println("Varianza evaluación " + eval + ": " + analizador.calcularVarianzaEvaluacion(eval));
+        break;
+
+    case 4:
+    start = System.nanoTime();
+    double[] promedios = analizador.calcularPromedioEstudiantes();
+    end = System.nanoTime();
+    System.out.println("Promedios de todos los estudiantes:");
+    for (int i = 0; i < promedios.length; i++) {
+        System.out.println("Estudiante " + (i+1) + " -> " + promedios[i]);
+    }
+    System.out.println("Tiempo de ejecución: " + (end - start) + " ns");
+    break;
+
+
+    case 5:
+    start = System.nanoTime();
+    double[] varianzas = analizador.calcularVarianzaEstudiantes();
+    end = System.nanoTime();
+    System.out.println("Varianzas de todos los estudiantes:");
+    for (int i = 0; i < varianzas.length; i++) {
+        System.out.println("Estudiante " + (i+1) + " -> " + varianzas[i]);
+    }
+    System.out.println("Tiempo de ejecución: " + (end - start) + " ns");
+    break;
+
+    case 6:
+    sc.nextLine(); // limpiar buffer
+    System.out.print("Ingrese nombres de evaluaciones separados por coma y respetando mayusculas (ej: S1,S3): ");
+    String linea = sc.nextLine();
+    String[] seleccion = linea.split(",");
+    double[] promediosSel = analizador.calcularPromedioEvaluaciones(seleccion);
+
+    System.out.println("Promedios en las evaluaciones seleccionadas:");
+    for (int i = 0; i < estudiantes; i++) {
+        System.out.println("RUT " + analizador.rut[i] + ": " + promediosSel[i]);
+    }
+    break;
+
+
+    case 7:
+        System.out.print("Ingrese índice de la evaluación (1 a " + (evaluaciones) + "): ");
+        eval = sc.nextInt() - 1;
+        System.out.println("RUT del mejor en evaluación " + (eval + 1) + ": " + analizador.encontrarMaximo(eval));
+        break;
+
+    case 8:
+        System.out.println("RUT y notas de todos los estudiantes:");
+        analizador.imprimirRutYNotas();
+        break;
+
+    case 9:
+        System.out.println("");
+        break;
+
+    default:
+        System.out.println("Opción no válida.");
+}
+        } while(opcion != 9);
+
+        sc.close();
+    }
+}
