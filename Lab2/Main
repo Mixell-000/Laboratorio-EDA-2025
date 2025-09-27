@@ -1,1 +1,192 @@
+import java.util.*;
+import java.io.*;
+
+class Nodo<T> {
+	private T valor;
+	private Nodo<T> siguiente;
+
+	public Nodo() {
+		this.valor = null;
+		this.siguiente = null;
+	}
+
+	public Nodo(T valor) {
+		this.valor = valor;
+		this.siguiente = null;
+	}
+
+	public Nodo(T valor, Nodo<T> siguiente) {
+		this.valor = valor;
+		this.siguiente = siguiente;
+	}
+
+	public T getValor() {
+		return valor;
+	}
+
+	public void setValor(T valor) {
+		this.valor = valor;
+	}
+
+	public Nodo<T> getSiguiente() {
+		return siguiente;
+	}
+
+	public void setSiguiente(Nodo<T> siguiente) {
+		this.siguiente = siguiente;
+	}
+
+}//proporcionado por la guia.
+
+class PilaEnlazada<T> {
+	//atributos
+	Nodo<T> tope;
+
+
+	//Metodos
+	public void push(T valor) {
+		Nodo<T> node = new Nodo<>(valor, tope);
+		tope = node;
+	}//creo un nodo (node) y lo nombro mi tope
+
+	public T pop() {
+    if (isEmpty()) {
+        throw new RuntimeException("La pila está vacía");
+    }
+    T valor = tope.getValor();
+    tope = tope.getSiguiente();
+    return valor;
+}//verifico si ewsta vacio, si lo esta imprimo el mensaje, de lo contrario creo el nuevo tope
+
+
+	public T peek() {
+    if (isEmpty()) {
+        throw new RuntimeException("La pila está vacía");
+    }
+    return tope.getValor();
+}
+
+    public boolean isEmpty() {
+    return tope == null;
+}
+
+
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("[");
+		Nodo<T> actual = tope;
+
+		while (actual != null) {
+			sb.append(actual.getValor());
+			actual = actual.getSiguiente();
+			if (actual != null) {
+				sb.append(", ");
+			}
+		}
+
+		sb.append("]");
+		return sb.toString();
+	}
+}//listo
+
+class ColaEnlazada<T> {
+    Nodo<T> inicio; // apunta al primer nodo de la cola
+
+    public boolean add(T valor) {
+        Nodo<T> nuevo = new Nodo<>(valor, null);
+        if (isEmpty()) {
+            inicio = nuevo;
+        } else {
+            Nodo<T> actual = inicio;
+            while (actual.getSiguiente() != null) {
+                actual = actual.getSiguiente();
+            }
+            actual.setSiguiente(nuevo);
+        }
+        return true;
+    }
+
+    public T poll() {
+        if (isEmpty()) {
+            throw new RuntimeException("La cola está vacía");
+        }
+        T valor = inicio.getValor();
+        inicio = inicio.getSiguiente();
+        return valor;
+    }
+
+    public T peek() {
+        if (isEmpty()) {
+            throw new RuntimeException("La cola está vacía");
+        }
+        return inicio.getValor();
+    }
+
+    public boolean isEmpty() {
+        return inicio == null;
+    }
+}
+
+class Main {
+    static long semilla = 42; 
+    static double probFallo = 0.3;
+    static int numAlertas = 5;
+    static int limiteRecursion = 3;
+
+    static ColaEnlazada<Alerta> colaDeAlertas = new ColaEnlazada<>();
+    static Random rand = new Random(semilla); //objeto Random que usa la semilla 42
+
+    public static void generarAlertas(int numAlertas) {
+        for (int i = 1; i <= numAlertas; i++) {
+            colaDeAlertas.add(new Alerta("Alerta" + i, probFallo));
+        }
+    }
+
+    public static void iniciarSimulacion() {
+        PilaEnlazada<Alerta> pila = new PilaEnlazada<>();
+        generarAlertas(numAlertas);
+
+        while (!colaDeAlertas.isEmpty()) {
+            Alerta alerta = colaDeAlertas.poll();
+            pila.push(alerta);
+            boolean resultado = alerta.procesarLlamada(pila, limiteRecursion);
+
+            System.out.println(alerta.nombre + " -> " + (resultado ? "RESUELTA" : "FALLO"));
+            System.out.println("Estado de la pila: " + pila);
+        }
+    }
+
+    public static void main(String[] args) {
+        iniciarSimulacion();
+    }
+}
+
+class Alerta {
+    String nombre;
+    double probFallo;
+    int limiteAlertas;
+
+    public Alerta(String nombre, double probFallo) {
+        this.nombre = nombre;
+        this.probFallo = probFallo;
+        this.limiteAlertas = Main.limiteRecursion; // inicializamos el límite
+    }
+
+    public boolean procesarLlamada(PilaEnlazada<Alerta> pila, int limite) {
+    double r = Main.rand.nextDouble();
+
+    if (limite <= 0) {
+        return true;
+    }
+
+    if (r < probFallo) {
+        return false;
+    } else {
+        Alerta nueva = new Alerta(nombre + "_retry", probFallo);
+        pila.push(nueva);
+        return nueva.procesarLlamada(pila, limite - 1);
+    }
+}
+
+}
 
