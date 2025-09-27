@@ -128,25 +128,26 @@ class ColaEnlazada<T> {
 }
 
 class Main {
-    static long semilla = 42; // recomendación del profe
+    static long semilla = 42; 
     static double probFallo = 0.3;
     static int numAlertas = 5;
     static int limiteRecursion = 3;
 
-    public static ColaEnlazada<Alerta> generarAlertas(int numAlertas) {
-        ColaEnlazada<Alerta> cola = new ColaEnlazada<>();
+    static ColaEnlazada<Alerta> colaDeAlertas = new ColaEnlazada<>();
+
+
+    public static void generarAlertas(int numAlertas) {
         for (int i = 1; i <= numAlertas; i++) {
-            cola.add(new Alerta("Alerta" + i, probFallo));
+            colaDeAlertas.add(new Alerta("Alerta" + i, probFallo));
         }
-        return cola;
     }
 
     public static void iniciarSimulacion() {
-        ColaEnlazada<Alerta> cola = generarAlertas(numAlertas);
         PilaEnlazada<Alerta> pila = new PilaEnlazada<>();
+        generarAlertas(numAlertas);
 
-        while (!cola.isEmpty()) {
-            Alerta alerta = cola.poll();
+        while (!colaDeAlertas.isEmpty()) {
+            Alerta alerta = colaDeAlertas.poll();
             pila.push(alerta);
             boolean resultado = alerta.procesarLlamada(pila, limiteRecursion);
 
@@ -160,6 +161,7 @@ class Main {
     }
 }
 
+
 class Alerta {
     String nombre;
     double probFallo;
@@ -168,19 +170,25 @@ class Alerta {
     public Alerta(String nombre, double probFallo) {
         this.nombre = nombre;
         this.probFallo = probFallo;
+        this.limiteAlertas = Main.limiteRecursion; // inicializamos el límite
     }
 
     public boolean procesarLlamada(PilaEnlazada<Alerta> pila, int limite) {
-        Random rand = new Random();
-        if (rand.nextDouble() > probFallo) {
-            return true; // no falló
-        } else if (limite <= 0) {
-            return false; // falló y ya no hay más intentos
+        Random rand = new Random(Main.semilla); // usa semilla fija si quieres reproducibilidad
+        double r = rand.nextDouble();
+
+        if (limite <= 0) {
+            return true; // alcanzamos el límite = éxito
+        }
+
+        if (r < probFallo) {
+            return false; // fallo directo
         } else {
-            // generar una nueva alerta y apilarla
-            Alerta nueva = new Alerta(nombre + "retry", probFallo);
+            // generar una nueva alerta en cascada
+            Alerta nueva = new Alerta(nombre + "_retry", probFallo);
             pila.push(nueva);
             return nueva.procesarLlamada(pila, limite - 1);
         }
     }
 }
+
