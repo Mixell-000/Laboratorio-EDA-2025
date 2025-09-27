@@ -1,0 +1,21 @@
+/* Notas del lab
+
+para la utilizacion de nuestro lab, el profesor recomienda utilizar la semilla 42, pero podemos utilizar uno cualquiera.
+recordar responder de form aimplicita el lab, no hace falta ser de forma explicita.
+para los graficos, el y axis es recomendable que sea siempre el mismo, ej:tiempo.
+
+la introduccion no es tan importante, podemos pegar y copiar la introduccion directamente del lab 2, ya que todos al tener el mismo problema del lab no es necesario presentarlo.
+
+T es un tipo de dato
+
+el constructor esta hehco en la guia
+
+evitar el uso de menues para el lab, el profe recomienda evitar su uso
+
+
+
+
+
+
+
+*/
