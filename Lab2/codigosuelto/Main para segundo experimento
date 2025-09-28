@@ -1,0 +1,39 @@
+class Main {
+    static long semilla = 42; 
+    static double probFallo = 0.3;
+    static int limiteRecursion = 3;
+
+    static ColaEnlazada<Alerta> colaDeAlertas;
+    static Random rand = new Random(semilla);
+
+    public static void generarAlertas(int numAlertas) {
+        colaDeAlertas = new ColaEnlazada<>();
+        for (int i = 1; i <= numAlertas; i++) {
+            colaDeAlertas.add(new Alerta("Alerta" + i, probFallo));
+        }
+    }
+
+    public static void iniciarSimulacion(int numAlertas) {
+        PilaEnlazada<Alerta> pila = new PilaEnlazada<>();
+        generarAlertas(numAlertas);
+
+        while (!colaDeAlertas.isEmpty()) {
+            Alerta alerta = colaDeAlertas.poll();
+            pila.push(alerta);
+            alerta.procesarLlamada(pila, limiteRecursion);
+        }
+    }
+
+    public static void main(String[] args) {
+        int[] cantidades = {10,20,30,40,50,60,70,80,90,100};
+        System.out.println("nAlertas\tTiempo(ns)");
+
+        for (int n : cantidades) {
+            long inicio = System.nanoTime();
+            iniciarSimulacion(n);
+            long fin = System.nanoTime();
+            long tiempo = fin - inicio;
+            System.out.println(n + "\t\t" + tiempo);
+        }
+    }
+}
