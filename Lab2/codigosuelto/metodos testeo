@@ -1,1 +1,73 @@
+ public static void main(String[] args) {
 
+        // PRUEBAS DE PILA
+  
+        System.out.println("PRUEBAS DE PILA");
+        PilaEnlazada<Integer> pila = new PilaEnlazada<>();
+
+        System.out.println("Pila vacía al inicio: " + pila.isEmpty()); 
+
+        pila.push(10);
+        pila.push(20);
+        pila.push(30);
+
+        System.out.println("Estado de la pila: " + pila);
+        System.out.println("Peek : " + pila.peek());
+
+        System.out.println("Pop : " + pila.pop());
+        System.out.println("Pop : " + pila.pop());
+
+        System.out.println("Estado de la pila: " + pila); 
+
+        System.out.println("Pop : " + pila.pop());
+
+        System.out.println("Esta vacia la pila?: " + pila.isEmpty());
+
+        try {
+            pila.pop(); 
+        } catch (RuntimeException e) {
+            System.out.println("Pop en pila vacía: " + e.getMessage());
+        }
+
+        try {
+            pila.peek(); // debe lanzar error
+        } catch (RuntimeException e) {
+            System.out.println("Peek en pila vacía: " + e.getMessage());
+        }
+
+   
+        // PRUEBAS DE COLA
+
+        System.out.println("\n=== PRUEBAS DE COLA ===");
+        ColaEnlazada<String> cola = new ColaEnlazada<>();
+
+        System.out.println("Cola vacía al inicio: " + cola.isEmpty()); 
+
+        cola.add("A");
+        cola.add("B");
+        cola.add("C");
+
+        System.out.println("Peek (debe ser A): " + cola.peek()); 
+
+        System.out.println("Poll (debe ser A): " + cola.poll()); 
+        System.out.println("Poll (debe ser B): " + cola.poll()); 
+
+        System.out.println("Peek (debe ser C): " + cola.peek());
+        System.out.println("Poll (debe ser C): " + cola.poll()); 
+
+        System.out.println("¿Está vacía la cola?: " + cola.isEmpty()); 
+
+        try {
+            cola.poll(); // debe lanzar error
+        } catch (RuntimeException e) {
+            System.out.println("Poll en cola vacía: " + e.getMessage());
+        }
+
+        try {
+            cola.peek(); // debe lanzar error
+        } catch (RuntimeException e) {
+            System.out.println("Peek en cola vacía: " + e.getMessage());
+        }
+
+       
+    }// nota importante ! para usar este main se puede reemplazar el mismo Main del archivo definitivo y eliminando la clase alertas (para evitar problemas)
