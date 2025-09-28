@@ -52,3 +52,66 @@
         
        
     }// nota importante ! para usar este main se puede reemplazar el mismo Main del archivo definitivo y eliminando la clase alertas (para evitar problemas)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+public static void main(String[] args) {
+
+ 
+        // PRUEBAS DE PILA
+
+        System.out.println("PRUEBAS DE PILA");
+        PilaEnlazada<Integer> pila = new PilaEnlazada<>();
+
+        // Estado inicial
+        System.out.println("¿Pila vacía al inicio?: " + pila.isEmpty());
+
+        // Insertar elementos
+        pila.push(10);
+        pila.push(20);
+        pila.push(30);
+        System.out.println("Estado de la pila tras push: " + pila);
+        System.out.println("¿Está vacía la pila?: " + pila.isEmpty());
+
+        // Extraer elementos
+        pila.pop();
+        System.out.println("Tras un pop, pila: " + pila + " | Vacía?: " + pila.isEmpty());
+        pila.pop();
+        System.out.println("Tras segundo pop, pila: " + pila + " | Vacía?: " + pila.isEmpty());
+        pila.pop();
+        System.out.println("Tras vaciar la pila: " + pila + " | Vacía?: " + pila.isEmpty());
+
+        // PRUEBAS DE COLA
+
+        System.out.println("PRUEBAS DE COLA");
+        ColaEnlazada<String> cola = new ColaEnlazada<>();
+
+        // Estado inicial
+        System.out.println("¿Cola vacía al inicio?: " + cola.isEmpty());
+
+        // Insertar elementos
+        cola.add("A");
+        cola.add("B");
+        cola.add("C");
+        System.out.println("Se agregaron A, B, C. Vacía?: " + cola.isEmpty());
+
+        // Extraer elementos
+        cola.poll();
+        System.out.println("Tras un poll, vacía?: " + cola.isEmpty());
+        cola.poll();
+        System.out.println("Tras segundo poll, vacía?: " + cola.isEmpty());
+        cola.poll();
+        System.out.println("Tras vaciar la cola, vacía?: " + cola.isEmpty());
+    }
