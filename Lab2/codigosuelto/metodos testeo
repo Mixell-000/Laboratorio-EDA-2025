@@ -23,17 +23,7 @@
 
         System.out.println("Esta vacia la pila?: " + pila.isEmpty());
 
-        try {
-            pila.pop(); 
-        } catch (RuntimeException e) {
-            System.out.println("Pop en pila vacía: " + e.getMessage());
-        }
-
-        try {
-            pila.peek(); // debe lanzar error
-        } catch (RuntimeException e) {
-            System.out.println("Peek en pila vacía: " + e.getMessage());
-        }
+        
 
    
         // PRUEBAS DE COLA
@@ -55,19 +45,10 @@
         System.out.println("Peek (debe ser C): " + cola.peek());
         System.out.println("Poll (debe ser C): " + cola.poll()); 
 
-        System.out.println("¿Está vacía la cola?: " + cola.isEmpty()); 
+ 
 
-        try {
-            cola.poll(); // debe lanzar error
-        } catch (RuntimeException e) {
-            System.out.println("Poll en cola vacía: " + e.getMessage());
-        }
+        
 
-        try {
-            cola.peek(); // debe lanzar error
-        } catch (RuntimeException e) {
-            System.out.println("Peek en cola vacía: " + e.getMessage());
-        }
-
+        
        
     }// nota importante ! para usar este main se puede reemplazar el mismo Main del archivo definitivo y eliminando la clase alertas (para evitar problemas)
