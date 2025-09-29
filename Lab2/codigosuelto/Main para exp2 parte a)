@@ -1,0 +1,42 @@
+public class Main {
+    static final long semilla = 42;
+    static final double probFallo = 0.1;
+    static final int limiteRecursion = 3;
+
+    public static void main(String[] args) {
+        int[] cantidades = {10,20,30,40,50,60,70,80,90,100};
+        System.out.println("Implementacion\t nAlertas\t Tiempo(ns)");
+
+        // 1) PilaEnlazada
+        for (int n : cantidades) {
+            long inicio = System.nanoTime();
+
+            PilaEnlazada<Alerta> pila = new PilaEnlazada<>();
+            for (int i = 1; i <= n; i++) {
+                pila.push(new Alerta("Alerta" + i, probFallo));
+            }
+            for (int i = 0; i < n/2; i++) {
+                pila.pop();
+            }
+
+            long tiempo = System.nanoTime() - inicio;
+            System.out.printf("PilaEnlazada\t %3d\t\t %d%n", n, tiempo);
+        }
+
+        // 2) Stack (java.util.Stack)
+        for (int n : cantidades) {
+            long inicio = System.nanoTime();
+
+            Stack<Alerta> stack2 = new Stack<>();
+            for (int i = 1; i <= n; i++) {
+                stack2.push(new Alerta("Alerta" + i, probFallo));
+            }
+            for (int i = 0; i < n/2; i++) {
+                stack2.pop();
+            }
+
+            long tiempo = System.nanoTime() - inicio;
+            System.out.printf("Stack2\t\t %3d\t\t %d%n", n, tiempo);
+        }
+    }
+}
