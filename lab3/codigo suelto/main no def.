@@ -1,1 +1,60 @@
+import java.util.*;
+import java.io.*;
+
+class Movie {
+	//atributos
+	String title;
+	String directores;
+	String genre;
+	int releaseYear;
+	double rating;
+
+
+	//Metodos
+	Movie(String title, String directores, String genre, int releaseYear, double rating) {
+
+	}
+
+}
+
+class MovieCatalog {
+
+	//atributos
+	Arraylist<Movie>movies;
+	String sortedByattribute();
+
+	//Metodos
+
+	MovieCatalog(ArrayList<Movie>movies) {
+
+	}
+
+	getMovieByRating(double rating) {
+
+	}
+
+	getMovieByRatingRange(double lowerRating, double higherRating) {
+
+	}
+
+	getMovieByGenre(string genre) {
+
+	}
+
+	getMovieByDirector(String director) {
+
+	}
+
+	getMovieByYear(int year) {
+
+	}
+
+	sortByAlgorithm(String algorithm, String attribute) {
+
+	}
+
+}
+
+public class Main {}
+
 
