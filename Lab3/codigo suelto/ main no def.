@@ -55,7 +55,7 @@ class MovieCatalog {
         return new ArrayList<>();
     }
 
-    public void sortByAlgorithm(String algoritmo, String atributo) {
+    public void sortByAlgorithm(String algorithm, String attribute) {
         
     }
 
