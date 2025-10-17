@@ -40,9 +40,10 @@ public class Main {
 		MovieCatalog catalog = new MovieCatalog(movieList);
 		System.out.println("Películas cargadas: " + movieList.size());
 
-		// Imprimir las primeras 3 películas para verificar que se estan leyendo bien
+		// Imprimir las primeras 3 películas
 		if (movieList.size() >= 3) {
 			for (int i = 0; i < 3; i++) {
+			    System.out.println("\n\n\n");
 				Movie m = movieList.get(i);
 				System.out.println("Película #" + (i + 1));
 				System.out.println("Título: " + m.title);
@@ -50,10 +51,10 @@ public class Main {
 				System.out.println("Género: " + m.genre);
 				System.out.println("Año: " + m.releaseYear);
 				System.out.println("Rating: " + m.rating);
-				System.out.println("\n\n\n"); // Separacion
+				System.out.println("\n\n\n"); // Separación entre películas
 			}
 		} else {
-			System.out.println(" ");
+			System.out.println("No hay suficientes películas para mostrar 3.");
 		}
 	}
 }
