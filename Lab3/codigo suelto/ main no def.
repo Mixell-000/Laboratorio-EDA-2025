@@ -2,63 +2,64 @@ import java.util.*;
 import java.io.*;
 
 class Movie {
-	//atributos
-	String title;
-	String directores;
-	String genre;
-	int releaseYear;
-	double rating;
+    // atributos
+    String title;
+    String director;
+    String genre;
+    int releaseYear;
+    double rating;
 
-
-	//Metodos
-	Movie(String title, String director, String genre, int releaseYear, double rating) {
+    // Constructor
+    Movie(String title, String director, String genre, int releaseYear, double rating) {
         this.title = title;
         this.director = director;
         this.genre = genre;
         this.releaseYear = releaseYear;
         this.rating = rating;
     }
-
 }
 
 class MovieCatalog {
 
-	//atributos
-	Arraylist<Movie>movies;
-	String sortedByattribute();
+    // atributos
+    ArrayList<Movie> movies;
+    String sortedByAttribute;
 
-	//Metodos
+    // Constructor
+    MovieCatalog(ArrayList<Movie> movies) {
+        this.movies = movies;
+        this.sortedByAttribute = " - ";
+    }
 
-	MovieCatalog(ArrayList<Movie>movies) {
+    // Métodos
+    public ArrayList<Movie> getMoviesByRating(double rating) {
+        return new ArrayList<>();
+    }
 
-	}
+    public ArrayList<Movie> getMoviesByRatingRange(double lowerRating, double higherRating) {
+        return new ArrayList<>();
+    }
 
-	getMovieByRating(double rating) {
+    public ArrayList<Movie> getMoviesByGenre(String genre) {
+        return new ArrayList<>();
+    }
 
-	}
+    public ArrayList<Movie> getMoviesByDirector(String director) {
+        return new ArrayList<>();
+    }
 
-	getMovieByRatingRange(double lowerRating, double higherRating) {
+    public ArrayList<Movie> getMoviesByYear(int year) {
+        return new ArrayList<>();
+    }
 
-	}
-
-	getMovieByGenre(string genre) {
-
-	}
-
-	getMovieByDirector(String director) {
-
-	}
-
-	getMovieByYear(int year) {
-
-	}
-
-	sortByAlgorithm(String algorithm, String attribute) {
-
-	}
-
+    public void sortByAlgorithm(String algorithm, String attribute) {
+        System.out.println("Ordenando por: " + attribute + " usando " + algorithm + " sort...");
+        sortedByAttribute = attribute;
+    }
 }
 
 public class Main {
-    public static void main(String[] args) {}
+    public static void main(String[] args) {
+
+    }
 }
