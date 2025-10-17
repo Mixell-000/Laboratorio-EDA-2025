@@ -1,1 +1,109 @@
 
+import java.util.*;
+import java.io.*;
+
+class Movie {
+	// atributos
+	String title;
+	String director;
+	String genre;
+	int releaseYear;
+	double rating;
+
+	// Constructor
+	Movie(String title, String director, String genre, int releaseYear, double rating) {
+		this.title = title;
+		this.director = director;
+		this.genre = genre;
+		this.releaseYear = releaseYear;
+		this.rating = rating;
+	}
+}
+
+class MovieCatalog {
+
+	// atributos
+	ArrayList<Movie> movies;
+	String sortedByAttribute;
+
+	// Constructor
+	MovieCatalog(ArrayList<Movie> movies) {
+		this.movies = movies;
+		this.sortedByAttribute = " - ";
+	}
+
+	// MC)todos
+	public ArrayList<Movie> getMoviesByRating(double rating) {
+		return new ArrayList<>();
+	}
+
+	public ArrayList<Movie> getMoviesByRatingRange(double lowerRating, double higherRating) {
+		return new ArrayList<>();
+	}
+
+	public ArrayList<Movie> getMoviesByGenre(String genre) {
+		return new ArrayList<>();
+	}
+
+	public ArrayList<Movie> getMoviesByDirector(String director) {
+		return new ArrayList<>();
+	}
+
+	public ArrayList<Movie> getMoviesByYear(int year) {
+		return new ArrayList<>();
+	}
+
+	public void sortByAlgorithm(String algorithm, String attribute) {
+		System.out.println("Ordenando por: " + attribute + " usando " + algorithm + " sort...");
+		sortedByAttribute = attribute;
+	}
+}
+
+public class Main {
+	public static void main(String[] args) {
+		ArrayList<Movie> movieList = new ArrayList<>();
+
+		try {
+			BufferedReader br = new BufferedReader(new FileReader("imdb_top_1000.csv"));
+			String line;
+			boolean firstLine = true;
+
+			while ((line = br.readLine()) != null) {
+				// Saltar encabezado
+				if (firstLine) {
+					firstLine = false;
+					continue;
+				}
+
+				// Dividir línea
+				String[] values = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+
+				try {
+					String title = values[1].replace("\"", "");
+					String genre = values[5].replace("\"", "");
+					String director = values[9].replace("\"", "");  
+					int year = Integer.parseInt(values[2].trim());  
+					double rating = Double.parseDouble(values[6].trim()); 
+
+					Movie m = new Movie(title, director, genre, year, rating);
+					movieList.add(m);
+				} catch (Exception e) {
+					continue; // ignorar líneas no válidas
+				}
+			}
+
+			br.close();
+		} catch (IOException e) {
+			System.out.println("Error al leer el archivo: " + e.getMessage());
+		}
+
+		// Crear el catálogo
+		MovieCatalog catalog = new MovieCatalog(movieList);
+		System.out.println("Películas cargadas: " + movieList.size());
+
+		
+	}
+}
+
+
+
