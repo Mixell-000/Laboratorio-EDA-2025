@@ -29,36 +29,40 @@ class MovieCatalog {
 
 	//Metodos
 
-	MovieCatalog(ArrayList<Movie>movies) {
+	MovieCatalog(ArrayList<Movie> movies) {
+        this.movies = movies;
+        this.sortedByAttribute = " - ";
+    }
 
-	}
 
-	getMovieByRating(double rating) {
+	public ArrayList<Movie> getMoviesByRating(double rating) {
+        return new ArrayList<>();
+    }
 
-	}
+    public ArrayList<Movie> getMoviesByRatingRange(double lowerRating, double higherRating) {
+        return new ArrayList<>();
+    }
 
-	getMovieByRatingRange(double lowerRating, double higherRating) {
+    public ArrayList<Movie> getMoviesByGenre(String genre) {
+        return new ArrayList<>();
+    }
 
-	}
+    public ArrayList<Movie> getMoviesByDirector(String director) {
+        return new ArrayList<>();
+    }
 
-	getMovieByGenre(string genre) {
+    public ArrayList<Movie> getMoviesByYear(int year) {
+        return new ArrayList<>();
+    }
 
-	}
-
-	getMovieByDirector(String director) {
-
-	}
-
-	getMovieByYear(int year) {
-
-	}
-
-	sortByAlgorithm(String algorithm, String attribute) {
-
-	}
+    public void sortByAlgorithm(String algoritmo, String atributo) {
+        
+    }
 
 }
 
-public class Main {}
+public class Main {
+    public static void main(String[] args) {}
+}
 
 
