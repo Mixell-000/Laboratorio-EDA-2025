@@ -11,9 +11,13 @@ class Movie {
 
 
 	//Metodos
-	Movie(String title, String directores, String genre, int releaseYear, double rating) {
-
-	}
+	Movie(String title, String director, String genre, int releaseYear, double rating) {
+        this.title = title;
+        this.director = director;
+        this.genre = genre;
+        this.releaseYear = releaseYear;
+        this.rating = rating;
+    }
 
 }
 
