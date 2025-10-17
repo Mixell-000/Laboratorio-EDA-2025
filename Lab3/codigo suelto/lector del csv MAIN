@@ -1,0 +1,59 @@
+public class Main {
+	public static void main(String[] args) {
+		ArrayList<Movie> movieList = new ArrayList<>();
+
+		try {
+			BufferedReader br = new BufferedReader(new FileReader("imdb_top_1000.csv"));
+			String line;
+			boolean firstLine = true;
+
+			while ((line = br.readLine()) != null) {
+				// Saltar encabezado
+				if (firstLine) {
+					firstLine = false;
+					continue;
+				}
+
+				// Dividir línea
+				String[] values = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+
+				try {
+					String title = values[1].replace("\"", "");
+					String genre = values[5].replace("\"", "");
+					String director = values[9].replace("\"", "");  
+					int year = Integer.parseInt(values[2].trim());  
+					double rating = Double.parseDouble(values[6].trim()); 
+
+					Movie m = new Movie(title, director, genre, year, rating);
+					movieList.add(m);
+				} catch (Exception e) {
+					continue; // ignorar líneas no válidas
+				}
+			}
+
+			br.close();
+		} catch (IOException e) {
+			System.out.println("Error al leer el archivo: " + e.getMessage());
+		}
+
+		// Crear el catálogo
+		MovieCatalog catalog = new MovieCatalog(movieList);
+		System.out.println("Películas cargadas: " + movieList.size());
+
+		// Imprimir las primeras 3 películas para verificar que se estan leyendo bien
+		if (movieList.size() >= 3) {
+			for (int i = 0; i < 3; i++) {
+				Movie m = movieList.get(i);
+				System.out.println("Película #" + (i + 1));
+				System.out.println("Título: " + m.title);
+				System.out.println("Director: " + m.director);
+				System.out.println("Género: " + m.genre);
+				System.out.println("Año: " + m.releaseYear);
+				System.out.println("Rating: " + m.rating);
+				System.out.println("\n\n\n"); // Separacion
+			}
+		} else {
+			System.out.println(" ");
+		}
+	}
+}
