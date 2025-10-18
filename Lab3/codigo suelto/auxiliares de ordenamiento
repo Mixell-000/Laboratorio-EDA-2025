@@ -1,1 +1,133 @@
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// InsertionSort
+private void insertionSort(Comparator<Movie> comparator) {
+    for (int i = 1; i < movies.size(); i++) {
+        Movie key = movies.get(i);
+        int j = i - 1;
+        
+        while (j >= 0 && comparator.compare(movies.get(j), key) > 0) {
+            movies.set(j + 1, movies.get(j));
+            j--;
+        }
+        movies.set(j + 1, key);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+// MergeSort 
+private void mergeSort(Comparator<Movie> comparator) {
+    mergeSort(0, movies.size() - 1, comparator);
+}
+
+private void mergeSort(int left, int right, Comparator<Movie> comparator) {
+    if (left < right) {
+        int mid = (left + right) / 2;
+        mergeSort(left, mid, comparator);
+        mergeSort(mid + 1, right, comparator);
+        merge(left, mid, right, comparator);
+    }
+}
+
+private void merge(int left, int mid, int right, Comparator<Movie> comparator) {
+    ArrayList<Movie> temp = new ArrayList<Movie>();
+    int i = left, j = mid + 1;
+    
+    while (i <= mid && j <= right) {
+        if (comparator.compare(movies.get(i), movies.get(j)) <= 0) {
+            temp.add(movies.get(i));
+            i++;
+        } else {
+            temp.add(movies.get(j));
+            j++;
+        }
+    }
+    
+    while (i <= mid) {
+        temp.add(movies.get(i));
+        i++;
+    }
+    
+    while (j <= right) {
+        temp.add(movies.get(j));
+        j++;
+    }
+    
+    for (int k = 0; k < temp.size(); k++) {
+        movies.set(left + k, temp.get(k));
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+// Radix Sort (obligatorio)
+private void radixSortByYear() {
+    if (movies.isEmpty()) return;
+    
+    int minYear = movies.get(0).releaseYear;
+    int maxYear = movies.get(0).releaseYear;
+    for (Movie movie : movies) {
+        if (movie.releaseYear < minYear) minYear = movie.releaseYear;
+        if (movie.releaseYear > maxYear) maxYear = movie.releaseYear;
+    }
+    
+    int range = maxYear - minYear + 1;
+    int[] count = new int[range];
+    ArrayList<Movie> output = new ArrayList<Movie>(Collections.nCopies(movies.size(), null));
+    
+    for (Movie movie : movies) {
+        count[movie.releaseYear - minYear]++;
+    }
+    
+    for (int i = 1; i < range; i++) {
+        count[i] += count[i - 1];
+    }
+    
+    for (int i = movies.size() - 1; i >= 0; i--) {
+        output.set(count[movies.get(i).releaseYear - minYear] - 1, movies.get(i));
+        count[movies.get(i).releaseYear - minYear]--;
+    }
+    
+    for (int i = 0; i < movies.size(); i++) {
+        movies.set(i, output.get(i));
+    }
+}
+	
+	
+	
