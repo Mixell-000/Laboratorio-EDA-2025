@@ -2,64 +2,277 @@ import java.util.*;
 import java.io.*;
 
 class Movie {
-    // atributos
-    String title;
-    String director;
-    String genre;
-    int releaseYear;
-    double rating;
+	// atributos
+	String title;
+	String director;
+	String genre;
+	int releaseYear;
+	double rating;
 
-    // Constructor
-    Movie(String title, String director, String genre, int releaseYear, double rating) {
-        this.title = title;
-        this.director = director;
-        this.genre = genre;
-        this.releaseYear = releaseYear;
-        this.rating = rating;
-    }
+	// Constructor
+	Movie(String title, String director, String genre, int releaseYear, double rating) {
+		this.title = title;
+		this.director = director;
+		this.genre = genre;
+		this.releaseYear = releaseYear;
+		this.rating = rating;
+	}
 }
 
 class MovieCatalog {
 
-    // atributos
-    ArrayList<Movie> movies;
-    String sortedByAttribute;
+	// atributos
+	ArrayList<Movie> movies;
+	String sortedByAttribute;
 
-    // Constructor
-    MovieCatalog(ArrayList<Movie> movies) {
-        this.movies = movies;
-        this.sortedByAttribute = " - ";
-    }
+	// Constructor
+	MovieCatalog(ArrayList<Movie> movies) {
+		this.movies = movies;
+		this.sortedByAttribute = null;
+	}
 
-    // Métodos
-    public ArrayList<Movie> getMoviesByRating(double rating) {
-        return new ArrayList<>();
-    }
+	// Metodos
+	public ArrayList<Movie> getMoviesByRating(double rating) {
+		ArrayList<Movie> result = new ArrayList<>();
 
-    public ArrayList<Movie> getMoviesByRatingRange(double lowerRating, double higherRating) {
-        return new ArrayList<>();
-    }
+		if ("rating".equalsIgnoreCase(sortedByAttribute)) {
+			// busqueda binaria
+			int left = 0;
+			int right = movies.size() - 1;
 
-    public ArrayList<Movie> getMoviesByGenre(String genre) {
-        return new ArrayList<>();
-    }
+			while (left <= right) {
+				int mid = (left + right) / 2;
+				double midRating = movies.get(mid).rating;
 
-    public ArrayList<Movie> getMoviesByDirector(String director) {
-        return new ArrayList<>();
-    }
+				if (Math.abs(midRating - rating) <= 0.1) {
 
-    public ArrayList<Movie> getMoviesByYear(int year) {
-        return new ArrayList<>();
-    }
+					for (int i = mid; i >= 0 && Math.abs(movies.get(i).rating - rating) <= 0.1; i--) {
+						if (!result.contains(movies.get(i))) result.add(movies.get(i));
+					}
+					for (int i = mid + 1; i < movies.size() && Math.abs(movies.get(i).rating - rating) <= 0.1; i++) {
+						result.add(movies.get(i));
+					}
+					break;
+				} else if (midRating < rating) {
+					left = mid + 1;
+				} else {
+					right = mid - 1;
+				}
+			}
+		} else {
+			// busqueda lineal
+			for (int i = 0; i < movies.size(); i++) {
+				if (Math.abs(movies.get(i).rating - rating) <= 0.1) {
+					result.add(movies.get(i));
+				}
+			}
+		}
+		return result;
+	}//si esta ordenado por rating busqueda binaria, de lo contrario lineal
+
+	public ArrayList<Movie> getMoviesByRatingRange(double lowerRating, double higherRating) {
+		ArrayList<Movie> result = new ArrayList<>();
+
+		if ("rating".equalsIgnoreCase(sortedByAttribute)) {
+			for (int i = 0; i < movies.size(); i++) {
+				double r = movies.get(i).rating;
+				if (r >= lowerRating && r <= higherRating) {
+					result.add(movies.get(i));
+				}
+			}
+		} else {
+			for (int i = 0; i < movies.size(); i++) {
+				double r = movies.get(i).rating;
+				if (r >= lowerRating && r <= higherRating) {
+					result.add(movies.get(i));
+				}
+			}
+		}
+		return result;
+	}//si esta ordenado por rating busqueda binaria, de lo contrario lineal
+
+
+	public ArrayList<Movie> getMoviesByGenre(String genre) {
+		ArrayList<Movie> result = new ArrayList<>();
+
+		if ("genre".equalsIgnoreCase(sortedByAttribute)) {
+			int left = 0;
+			int right = movies.size() - 1;
+
+			while (left <= right) {
+				int mid = (left + right) / 2;
+				int cmp = movies.get(mid).genre.compareToIgnoreCase(genre);
+
+				if (cmp == 0) {
+					for (int i = mid; i >= 0 && movies.get(i).genre.equalsIgnoreCase(genre); i--) {
+						result.add(movies.get(i));
+					}
+					for (int i = mid + 1; i < movies.size() && movies.get(i).genre.equalsIgnoreCase(genre); i++) {
+						result.add(movies.get(i));
+					}
+					break;
+				} else if (cmp < 0) {
+					left = mid + 1;
+				} else {
+					right = mid - 1;
+				}
+			}
+		} else {
+			for (int i = 0; i < movies.size(); i++) {
+				if (movies.get(i).genre.equalsIgnoreCase(genre)) {
+					result.add(movies.get(i));
+				}
+			}
+		}
+		return result;
+	}
+
+
+	public ArrayList<Movie> getMoviesByDirector(String director) {
+		ArrayList<Movie> result = new ArrayList<>();
+
+		if ("director".equalsIgnoreCase(sortedByAttribute)) {
+			int left = 0, right = movies.size() - 1;
+			while (left <= right) {
+				int mid = (left + right) / 2;
+				int cmp = movies.get(mid).director.compareToIgnoreCase(director);
+
+				if (cmp == 0) {
+					for (int i = mid; i >= 0 && movies.get(i).director.equalsIgnoreCase(director); i--) {
+						result.add(movies.get(i));
+					}
+					for (int i = mid + 1; i < movies.size() && movies.get(i).director.equalsIgnoreCase(director); i++) {
+						result.add(movies.get(i));
+					}
+					break;
+				} else if (cmp < 0) left = mid + 1;
+				else right = mid - 1;
+			}
+		} else {
+			for (int i = 0; i < movies.size(); i++) {
+				if (movies.get(i).director.equalsIgnoreCase(director)) {
+					result.add(movies.get(i));
+				}
+			}
+		}
+		return result;
+	}
+
+
+	public ArrayList<Movie> getMoviesByYear(int year) {
+		ArrayList<Movie> result = new ArrayList<>();
+
+		if ("year".equalsIgnoreCase(sortedByAttribute)) {
+			int left = 0, right = movies.size() - 1;
+			while (left <= right) {
+				int mid = (left + right) / 2;
+				int midYear = movies.get(mid).releaseYear;
+
+				if (midYear == year) {
+					for (int i = mid; i >= 0 && movies.get(i).releaseYear == year; i--) {
+						result.add(movies.get(i));
+					}
+					for (int i = mid + 1; i < movies.size() && movies.get(i).releaseYear == year; i++) {
+						result.add(movies.get(i));
+					}
+					break;
+				} else if (midYear < year) left = mid + 1;
+				else right = mid - 1;
+			}
+		} else {
+			for (int i = 0; i < movies.size(); i++) {
+				if (movies.get(i).releaseYear == year) {
+					result.add(movies.get(i));
+				}
+			}
+		}
+		return result;
+	}
 
     public void sortByAlgorithm(String algorithm, String attribute) {
-        System.out.println("Ordenando por: " + attribute + " usando " + algorithm + " sort...");
-        sortedByAttribute = attribute;
+    System.out.println("Ordenando por: " + attribute + " usando " + algorithm + "...");
+
+    // Si el atributo no es reconocido, usar "rating" por defecto
+    if (attribute == null || (!attribute.equalsIgnoreCase("rating") &&
+        !attribute.equalsIgnoreCase("genre") &&
+        !attribute.equalsIgnoreCase("director") &&
+        !attribute.equalsIgnoreCase("year"))) {
+        attribute = "rating";
     }
+
+    switch (algorithm.toLowerCase()) {
+        case "insertionsort":
+        case "selectionsort": // solo uno requerido
+            insertionSort(attribute);
+            break;
+
+        case "mergesort":
+        case "quicksort": // solo uno requerido
+            movies = mergeSort(movies, attribute);
+            break;
+
+        case "radixsort":
+            if (attribute.equalsIgnoreCase("year")) radixSortByYear();
+            else System.out.println("RadixSort solo se aplica al atributo 'year'.");
+            break;
+
+        default:
+            Collections.sort(movies, getComparator(attribute));
+            System.out.println("Usando Collections.sort() por defecto.");
+            break;
+    }
+
+    sortedByAttribute = attribute;
+}
+
+	
 }
 
 public class Main {
-    public static void main(String[] args) {
+	public static void main(String[] args) {
+		ArrayList<Movie> movieList = new ArrayList<>();
 
-    }
+		try {
+			BufferedReader br = new BufferedReader(new FileReader("imdb_top_1000.csv"));
+			String line;
+			boolean firstLine = true;
+
+			while ((line = br.readLine()) != null) {
+				// Saltar encabezado
+				if (firstLine) {
+					firstLine = false;
+					continue;
+				}
+
+				// Dividir linea
+				String[] values = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+
+				try {
+					String title = values[1].replace("\"", "");
+					String genre = values[5].replace("\"", "");
+					String director = values[9].replace("\"", "");
+					int year = Integer.parseInt(values[2].trim());
+					double rating = Double.parseDouble(values[6].trim());
+
+					Movie m = new Movie(title, director, genre, year, rating);
+					movieList.add(m);
+				} catch (Exception e) {
+					continue; // ignorar lineas no validas
+				}
+			}
+
+			br.close();
+		} catch (IOException e) {
+			System.out.println("Error al leer el archivo: " + e.getMessage());
+		}
+
+		// Crear el catalogo
+		MovieCatalog catalog = new MovieCatalog(movieList);
+		System.out.println("Peliculas cargadas: " + movieList.size());
+
+
+	}
 }
+
+
+
