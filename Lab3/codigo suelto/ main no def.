@@ -190,39 +190,6 @@ class MovieCatalog {
 	}
 
     public void sortByAlgorithm(String algorithm, String attribute) {
-    System.out.println("Ordenando por: " + attribute + " usando " + algorithm + "...");
-
-    // Si el atributo no es reconocido, usar "rating" por defecto
-    if (attribute == null || (!attribute.equalsIgnoreCase("rating") &&
-        !attribute.equalsIgnoreCase("genre") &&
-        !attribute.equalsIgnoreCase("director") &&
-        !attribute.equalsIgnoreCase("year"))) {
-        attribute = "rating";
-    }
-
-    switch (algorithm.toLowerCase()) {
-        case "insertionsort":
-        case "selectionsort": // solo uno requerido
-            insertionSort(attribute);
-            break;
-
-        case "mergesort":
-        case "quicksort": // solo uno requerido
-            movies = mergeSort(movies, attribute);
-            break;
-
-        case "radixsort":
-            if (attribute.equalsIgnoreCase("year")) radixSortByYear();
-            else System.out.println("RadixSort solo se aplica al atributo 'year'.");
-            break;
-
-        default:
-            Collections.sort(movies, getComparator(attribute));
-            System.out.println("Usando Collections.sort() por defecto.");
-            break;
-    }
-
-    sortedByAttribute = attribute;
 }
 
 	
