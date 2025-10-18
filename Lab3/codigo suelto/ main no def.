@@ -189,8 +189,207 @@ class MovieCatalog {
 		return result;
 	}
 
-    public void sortByAlgorithm(String algorithm, String attribute) {
+
+
+
+
+
+
+
+
+
+
+
+public void sortByAlgorithm(String algorithm, String attribute) {
+    // Obtener el comparador adecuado según el atributo
+    Comparator<Movie> comparator = getComparator(attribute);
+    
+    // Seleccionar algoritmo de ordenamiento (solo uno de cada categoría)
+    switch (algorithm.toLowerCase()) {
+        case "insertionsort":
+            insertionSort(comparator);
+            break;
+        case "mergesort":
+            mergeSort(comparator);
+            break;
+        case "radixsort":
+            if ("year".equals(attribute)) {
+                radixSortByYear();
+            } else {
+                // Para atributos no numéricos, usar Collections.sort
+                Collections.sort(movies, comparator);
+            }
+            break;
+        default:
+            // Si no se reconoce el algoritmo, usar Collections.sort
+            Collections.sort(movies, comparator);
+            break;
+    }
+    
+    // Actualizar el atributo de ordenamiento
+    sortedByAttribute = attribute;
 }
+
+
+
+public Comparator<Movie> getComparator(String attribute) {
+    switch (attribute.toLowerCase()) {
+        case "title":
+            return new Comparator<Movie>() {
+                public int compare(Movie m1, Movie m2) {
+                    return m1.title.compareToIgnoreCase(m2.title);
+                }
+            };
+        case "director":
+            return new Comparator<Movie>() {
+                public int compare(Movie m1, Movie m2) {
+                    return m1.director.compareToIgnoreCase(m2.director);
+                }
+            };
+        case "genre":
+            return new Comparator<Movie>() {
+                public int compare(Movie m1, Movie m2) {
+                    return m1.genre.compareToIgnoreCase(m2.genre);
+                }
+            };
+        case "year":
+            return new Comparator<Movie>() {
+                public int compare(Movie m1, Movie m2) {
+                    return Integer.compare(m1.releaseYear, m2.releaseYear);
+                }
+            };
+        case "rating":
+        default:
+            return new Comparator<Movie>() {
+                public int compare(Movie m1, Movie m2) {
+                    return Double.compare(m1.rating, m2.rating);
+                }
+            };
+    }
+}
+
+
+
+//METODOS AUXILIARES PARA EL SORTBYALGORITMH
+
+// InsertionSort
+public void insertionSort(Comparator<Movie> comparator) {
+    for (int i = 1; i < movies.size(); i++) {
+        Movie key = movies.get(i);
+        int j = i - 1;
+        
+        while (j >= 0 && comparator.compare(movies.get(j), key) > 0) {
+            movies.set(j + 1, movies.get(j));
+            j--;
+        }
+        movies.set(j + 1, key);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+// MergeSort 
+public void mergeSort(Comparator<Movie> comparator) {
+    mergeSort(0, movies.size() - 1, comparator);
+}
+
+public void mergeSort(int left, int right, Comparator<Movie> comparator) {
+    if (left < right) {
+        int mid = (left + right) / 2;
+        mergeSort(left, mid, comparator);
+        mergeSort(mid + 1, right, comparator);
+        merge(left, mid, right, comparator);
+    }
+}
+
+public void merge(int left, int mid, int right, Comparator<Movie> comparator) {
+    ArrayList<Movie> temp = new ArrayList<Movie>();
+    int i = left, j = mid + 1;
+    
+    while (i <= mid && j <= right) {
+        if (comparator.compare(movies.get(i), movies.get(j)) <= 0) {
+            temp.add(movies.get(i));
+            i++;
+        } else {
+            temp.add(movies.get(j));
+            j++;
+        }
+    }
+    
+    while (i <= mid) {
+        temp.add(movies.get(i));
+        i++;
+    }
+    
+    while (j <= right) {
+        temp.add(movies.get(j));
+        j++;
+    }
+    
+    for (int k = 0; k < temp.size(); k++) {
+        movies.set(left + k, temp.get(k));
+    }
+}
+
+
+
+
+// Radix Sort
+public void radixSortByYear() {
+    if (movies.isEmpty()) return;
+    
+    int minYear = movies.get(0).releaseYear;
+    int maxYear = movies.get(0).releaseYear;
+    for (Movie movie : movies) {
+        if (movie.releaseYear < minYear) minYear = movie.releaseYear;
+        if (movie.releaseYear > maxYear) maxYear = movie.releaseYear;
+    }
+    
+    int range = maxYear - minYear + 1;
+    int[] count = new int[range];
+    ArrayList<Movie> output = new ArrayList<Movie>(Collections.nCopies(movies.size(), null));
+    
+    for (Movie movie : movies) {
+        count[movie.releaseYear - minYear]++;
+    }
+    
+    for (int i = 1; i < range; i++) {
+        count[i] += count[i - 1];
+    }
+    
+    for (int i = movies.size() - 1; i >= 0; i--) {
+        output.set(count[movies.get(i).releaseYear - minYear] - 1, movies.get(i));
+        count[movies.get(i).releaseYear - minYear]--;
+    }
+    
+    for (int i = 0; i < movies.size(); i++) {
+        movies.set(i, output.get(i));
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	
 }
