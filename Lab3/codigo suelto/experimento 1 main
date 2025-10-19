@@ -46,7 +46,7 @@ public class Main {
 // ======================
 System.out.println("\n=== EXPERIMENTO DE ORDENAMIENTO ===");
 
-int[] tamaños = {100, 150, 200, 250, 400 ,450 ,500, 550, 600, 650, 700, 750, 800, 850, 900, 950 , 999};
+int[] tamaños = {100, 150, 200, 250, 400 ,450 ,500, 550, 600, 650, 700, 750, 800, 850, 900, 950 , 1000};
 String[] algoritmos = {"InsertionSort", "MergeSort", "RadixSort"};
 String atributo = "year"; // también puedes probar con "rating"
 
