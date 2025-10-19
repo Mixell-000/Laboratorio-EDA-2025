@@ -1,0 +1,75 @@
+public class Main {
+	public static void main(String[] args) {
+		ArrayList<Movie> movieList = new ArrayList<>();
+
+		try {
+			BufferedReader br = new BufferedReader(new FileReader("imdb_top_1000.csv"));
+			String line;
+			boolean firstLine = true;
+
+			while ((line = br.readLine()) != null) {
+				// Saltar encabezado
+				if (firstLine) {
+					firstLine = false;
+					continue;
+				}
+
+				// Dividir linea
+				String[] values = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+
+				try {
+					String title = values[1].replace("\"", "");
+					String genre = values[5].replace("\"", "");
+					String director = values[9].replace("\"", "");
+					int year = Integer.parseInt(values[2].trim());
+					double rating = Double.parseDouble(values[6].trim());
+
+					Movie m = new Movie(title, director, genre, year, rating);
+					movieList.add(m);
+				} catch (Exception e) {
+					continue; // ignorar lineas no validas
+				}
+			}
+
+			br.close();
+		} catch (IOException e) {
+			System.out.println("Error al leer el archivo: " + e.getMessage());
+		}
+
+		// Crear el catalogo
+		MovieCatalog catalog = new MovieCatalog(movieList);
+		System.out.println("Peliculas cargadas: " + movieList.size());
+		
+		
+		// ======================
+// EXPERIMENTACIÓN
+// ======================
+System.out.println("\n=== EXPERIMENTO DE ORDENAMIENTO ===");
+
+int[] tamaños = {100, 150, 200, 250, 400 ,450 ,500, 550, 600, 650, 700, 750, 800, 850, 900, 950 , 999};
+String[] algoritmos = {"InsertionSort", "MergeSort", "RadixSort"};
+String atributo = "year"; // también puedes probar con "rating"
+
+for (String alg : algoritmos) {
+    System.out.println("\nAlgoritmo: " + alg);
+    for (int n : tamaños) {
+        if (n > movieList.size()) break;
+
+        // Sublista de n elementos
+        ArrayList<Movie> subset = new ArrayList<>(movieList.subList(0, n));
+        MovieCatalog tempCatalog = new MovieCatalog(subset);
+
+        // Medir tiempo
+        long start = System.nanoTime();
+        tempCatalog.sortByAlgorithm(alg, atributo);
+        long end = System.nanoTime();
+
+        double tiempoMs = (end - start) / 1_000_000.0;
+        System.out.printf("n=%4d  →  %.3f ms%n", n, tiempoMs);
+    }
+}
+
+
+
+	}
+}
