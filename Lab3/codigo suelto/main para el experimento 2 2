@@ -1,0 +1,89 @@
+public class Main {
+	public static void main(String[] args) {
+		ArrayList<Movie> movieList = new ArrayList<>();
+
+		try {
+			BufferedReader br = new BufferedReader(new FileReader("imdb_top_1000.csv"));
+			String line;
+			boolean firstLine = true;
+
+			while ((line = br.readLine()) != null) {
+				// Saltar encabezado
+				if (firstLine) {
+					firstLine = false;
+					continue;
+				}
+
+				// Dividir linea
+				String[] values = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+
+				try {
+					String title = values[1].replace("\"", "");
+					String genre = values[5].replace("\"", "");
+					String director = values[9].replace("\"", "");
+					int year = Integer.parseInt(values[2].trim());
+					double rating = Double.parseDouble(values[6].trim());
+
+					Movie m = new Movie(title, director, genre, year, rating);
+					movieList.add(m);
+				} catch (Exception e) {
+					continue; // ignorar lineas no validas
+				}
+			}
+
+			br.close();
+		} catch (IOException e) {
+			System.out.println("Error al leer el archivo: " + e.getMessage());
+		}
+
+		// Crear el catalogo
+		MovieCatalog catalog = new MovieCatalog(movieList);
+		System.out.println("Peliculas cargadas: " + movieList.size());
+		
+		
+
+// EXPERIMENTO 2
+
+System.out.println("\n=== EXPERIMENTO DE ORDENAMIENTO ===");
+int[] tamaños = {100, 200, 300, 400, 500, 600, 700, 800, 900, 1000};
+
+System.out.printf("%-10s %-20s %-20s %-20s%n", 
+    "n", "InsertionSort (ns)", "MergeSort (ns)", "RadixSort (ns)");
+
+for (int n : tamaños) {
+    if (n > movieList.size()) break;
+
+    // InsertionSort
+    ArrayList<Movie> subset1 = new ArrayList<>(movieList.subList(0, n));
+    MovieCatalog catalogo1 = new MovieCatalog(subset1);
+    long start1 = System.nanoTime();
+    catalogo1.sortByAlgorithm("insertionsort", "rating");
+    long end1 = System.nanoTime();
+    long tiempoInsertion = end1 - start1;
+
+    // MergeSort
+    ArrayList<Movie> subset2 = new ArrayList<>(movieList.subList(0, n));
+    MovieCatalog catalogo2 = new MovieCatalog(subset2);
+    long start2 = System.nanoTime();
+    catalogo2.sortByAlgorithm("mergesort", "rating");
+    long end2 = System.nanoTime();
+    long tiempoMerge = end2 - start2;
+
+    // RadixSort
+    ArrayList<Movie> subset3 = new ArrayList<>(movieList.subList(0, n));
+    MovieCatalog catalogo3 = new MovieCatalog(subset3);
+    long start3 = System.nanoTime();
+    catalogo3.sortByAlgorithm("radixsort", "year"); 
+    long end3 = System.nanoTime();
+    long tiempoRadix = end3 - start3;
+
+    System.out.printf("%-10d %-20d %-20d %-20d%n", 
+        n, tiempoInsertion, tiempoMerge, tiempoRadix);
+}
+
+
+
+
+
+	}
+}
