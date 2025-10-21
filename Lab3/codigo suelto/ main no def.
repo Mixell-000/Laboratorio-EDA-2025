@@ -209,9 +209,19 @@ public void sortByAlgorithm(String algorithm, String attribute) {
         case "insertionsort":
             insertionSort(comparator);
             break;
+            
+        case "selectionsort":
+            selectionSort(comparator);
+            break;
+            
         case "mergesort":
             mergeSort(comparator);
             break;
+            
+        case "quicksort":
+            quickSort(comparator);
+            break;
+            
         case "radixsort":
             if ("year".equals(attribute)) {
                 radixSortByYear();
@@ -286,8 +296,53 @@ public void insertionSort(Comparator<Movie> comparator) {
     }
 }
 
+// SelectionSort
+public void selectionSort(Comparator<Movie> comparator) {
+    for (int i = 0; i < movies.size() - 1; i++) {
+        int indiceMenor = i;
+        for (int j = i + 1; j < movies.size(); j++) {
+            if (comparator.compare(movies.get(j), movies.get(indiceMenor)) < 0) {
+                indiceMenor= j; 
+            }
+        }
+        Movie temp = movies.get(indiceMenor);
+        movies.set(indiceMenor, movies.get(i));
+        movies.set(i, temp);
+    }
+}
 
+// QuickSort 
+public void quickSort(Comparator<Movie> comparator) {
+    quickSortRecursivo(0, movies.size() - 1, comparator);
+}
 
+private void quickSortRecursivo(int inicio, int fin, Comparator<Movie> comparator) {
+    if (inicio >= fin) return;
+    
+    Movie pivote = movies.get(fin);
+    
+    int posicionPivote = inicio - 1; 
+    
+    for (int i = inicio; i < fin; i++) {
+
+        if (comparator.compare(movies.get(i), pivote) < 0) {
+            posicionPivote++; 
+
+            Movie temp = movies.get(posicionPivote);
+            movies.set(posicionPivote, movies.get(i));
+            movies.set(i, temp);
+        }
+    }
+    
+    posicionPivote++;
+    Movie temp = movies.get(posicionPivote);
+    movies.set(posicionPivote, movies.get(fin));
+    movies.set(fin, temp);
+    
+
+    quickSortRecursivo(inicio, posicionPivote - 1, comparator);
+    quickSortRecursivo(posicionPivote + 1, fin, comparator);
+}
 
 
 
@@ -439,6 +494,5 @@ public class Main {
 
 	}
 }
-
 
 
