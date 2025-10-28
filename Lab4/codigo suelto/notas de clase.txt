@@ -1,2 +1,3 @@
 *el id d eun paciente queda bajo nuestro criterio, por lo que puede ser cualquier cosa, puede ser un rut, un numero, letras, etc.
 *el como podemos simular el tiempo podria ser dentro de un ciclo en el cual el indice podria representar un minuto, la gracia es que sean aprox 1440 iteraciones (minutos) que representarian 24 horas.
+*como recomendacion en el uso de la semilla aleatoria estaria bien utilizar la "42"
