@@ -1,1 +1,82 @@
 
+
+import java.util.*;
+import java.io.*;
+
+class Paciente {
+	// atributos
+String id;
+String nombre;
+int categoria;
+long tiempoLlegada;
+Stack<String> historialCambios = new Stack();
+
+    //metodos
+void registrarCambio(String descripcion){
+}
+
+}
+
+class ColaPrioridadPacientes {
+
+	// atributos
+ArrayList<Paciente> paciente = new ArrayList();
+int tamano;
+
+	// metodos
+void insertar(Pacientes p){
+    
+}
+
+Paciente extraerMon(){
+    
+}
+
+Paciente obtenerMin(){
+
+}
+
+boolean estaVacia(){
+    
+}
+}
+
+class HashPacientesEncadenado {
+}
+
+class HashPacientesSondeoLineal{
+    
+}
+
+class ArbolPacientes{
+
+}
+
+class Hospital{
+    //atributos
+Map<String ,Paciente>salaEspera;
+ArbolPacientes historicoPacientes;
+ColaPrioridadPacientes colaAtencion;
+
+    //metodos
+void registrarPacientes(Paciente p){
+    
+}
+Paciente atenderSiguiente(){
+    
+}   
+
+Paciente buscarPacienteActivo(String id){
+    
+}
+Paciente buscarPacienteHistorico(String id){
+    
+}
+
+}
+
+public class Main {
+	public static void main(String[] args) {
+	    
+	}
+}
