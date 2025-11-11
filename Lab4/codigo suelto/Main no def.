@@ -3,19 +3,53 @@
 import java.util.*;
 import java.io.*;
 
-class Paciente {
+class Paciente implements Comparable<Paciente>{
+    
+    
+    
+    
+    
 	// atributos
 String id;
 String nombre;
 int categoria;
 long tiempoLlegada;
-Stack<String> historialCambios = new Stack();
+Stack<String> historialCambios = new Stack<>();
 
-    //metodos
+    //constructor
+Paciente(String id ,String nombre, int categoria, long tiempoLlegada){
+        this.id = id;
+        this.nombre = nombre;
+        this.categoria = categoria;
+        this.tiempoLlegada = tiempoLlegada
+    }
+
+    //metodo
 void registrarCambio(String descripcion){
+    historialCambios.push(descripcion);
 }
 
-}
+public int compareTo(Paciente o) {
+        if (this.categoria != o.categoria) {
+            return this.categoria - o.categoria; 
+        }
+        return Long.compare(this.tiempoLlegada, o.tiempoLlegada); 
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+} //La clase Paciente debe implementar la interfaz Comparable<Paciente>
 
 class ColaPrioridadPacientes {
 
