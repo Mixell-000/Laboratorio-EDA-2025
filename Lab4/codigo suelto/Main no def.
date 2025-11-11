@@ -21,12 +21,12 @@ Paciente(String id ,String nombre, int categoria, long tiempoLlegada){
         this.id = id;
         this.nombre = nombre;
         this.categoria = categoria;
-        this.tiempoLlegada = tiempoLlegada
+        this.tiempoLlegada = tiempoLlegada;
     }
 
-    //metodo
+    //metodos
 void registrarCambio(String descripcion){
-    historialCambios.push(descripcion);
+    historialCambios.push(descripcion + " " + new Date());
 }
 
 public int compareTo(Paciente o) {
