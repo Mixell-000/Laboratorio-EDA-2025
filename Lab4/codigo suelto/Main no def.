@@ -2,11 +2,6 @@ import java.util.*;
 import java.io.*;
 
 class Paciente implements Comparable<Paciente>{
-    
-    
-    
-    
-    
 	// atributos
 String id;
 String nombre;
@@ -33,20 +28,6 @@ public int compareTo(Paciente o) {
         }
         return Long.compare(this.tiempoLlegada, o.tiempoLlegada); 
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 } //La clase Paciente debe implementar la interfaz Comparable<Paciente>
 
 class ColaPrioridadPacientes {
@@ -141,8 +122,6 @@ void insertar(Paciente p) {
         }
     }
 }
-
-
 
 class HashPacientesEncadenado implements Map<String, Paciente> {
 
