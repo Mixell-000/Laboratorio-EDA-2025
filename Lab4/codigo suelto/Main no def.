@@ -141,3 +141,87 @@ void insertar(Paciente p) {
         }
     }
 }
+
+
+
+class HashPacientesEncadenado implements Map<String, Paciente> {
+
+    // Atributos
+    LinkedList<Map.Entry<String, Paciente>>[] tabla;
+    int capacidad;
+    int tamano;
+
+    // Constructor
+    HashPacientesEncadenado(int capacidad) {
+        this.capacidad = capacidad;
+        this.tamano = 0;
+        tabla = new LinkedList[capacidad];
+        for (int i = 0; i < capacidad; i++) {
+            tabla[i] = new LinkedList<>();
+        }
+    }
+
+    // metodos
+
+    public Paciente put(String id, Paciente p) {
+        int indice = Math.abs(id.hashCode() % capacidad);
+        LinkedList<Map.Entry<String, Paciente>> lista = tabla[indice];
+
+        for (Map.Entry<String, Paciente> e : lista) {
+            if (e.getKey().equals(id)) {
+                Paciente anterior = e.getValue();
+                ((AbstractMap.SimpleEntry<String, Paciente>) e).setValue(p);
+                return anterior;
+            }
+        }
+
+        lista.add(new AbstractMap.SimpleEntry<>(id, p));
+        tamano++;
+        return null;
+    }
+
+
+    public Paciente get(Object id) {
+        if (!(id instanceof String)) return null;
+        int indice = Math.abs(((String) id).hashCode() % capacidad);
+        LinkedList<Map.Entry<String, Paciente>> lista = tabla[indice];
+
+        for (Map.Entry<String, Paciente> e : lista) {
+            if (e.getKey().equals(id)) {
+                return e.getValue();
+            }
+        }
+        return null;
+    }
+
+
+    public Paciente remove(Object id) {
+        if (!(id instanceof String)) return null;
+        int indice = Math.abs(((String) id).hashCode() % capacidad);
+        LinkedList<Map.Entry<String, Paciente>> lista = tabla[indice];
+
+        Iterator<Map.Entry<String, Paciente>> it = lista.iterator();
+        while (it.hasNext()) {
+            Map.Entry<String, Paciente> e = it.next();
+            if (e.getKey().equals(id)) {
+                Paciente eliminado = e.getValue();
+                it.remove();
+                tamano--;
+                return eliminado;
+            }
+        }
+        return null;
+    }
+
+public int size() {
+    return tamano; 
+}
+public boolean isEmpty() {
+    return tamano == 0; 
+}
+public boolean containsKey(Object key) {
+    return get(key) != null; 
+    
+}
+    
+}
