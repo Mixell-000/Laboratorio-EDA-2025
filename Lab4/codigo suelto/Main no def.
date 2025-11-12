@@ -296,3 +296,77 @@ class HashPacientesSondeoLineal {
 
 
 }
+
+class ArbolPacientes {
+
+    class NodoArbol {
+        Paciente paciente;
+        NodoArbol izq, der;
+
+        NodoArbol(Paciente p) {
+            this.paciente = p;
+        }
+    } // clase interna para el nodo
+    
+    //atributo
+
+    NodoArbol raiz;
+
+    //metodos
+
+    void insertar(Paciente p) {
+        if (raiz == null) {
+            raiz = new NodoArbol(p);
+            return;
+        }
+
+        NodoArbol actual = raiz;
+        while (true) {
+            if (p.id.compareTo(actual.paciente.id) < 0) {
+                if (actual.izq == null) {
+                    actual.izq = new NodoArbol(p);
+                    break;
+                }
+                actual = actual.izq;
+            } else if (p.id.compareTo(actual.paciente.id) > 0) {
+                if (actual.der == null) {
+                    actual.der = new NodoArbol(p);
+                    break;
+                }
+                actual = actual.der;
+            } else {
+                
+                break;
+            }
+        }
+    }
+
+    Paciente buscar(String id) {
+        NodoArbol n = raiz;
+        while (n != null) {
+            int a = id.compareTo(n.paciente.id);
+            if (a == 0) return n.paciente;
+            else if (a < 0) n = n.izq;
+            else n = n.der;
+        }
+        return null;
+    }
+
+    List<Paciente> obtenerPacientesEnOrden() {
+        List<Paciente> lista = new ArrayList<>();
+        Stack<NodoArbol> pila = new Stack<>();
+        NodoArbol actual = raiz;
+
+        while (actual != null || !pila.isEmpty()) {
+            while (actual != null) {
+                pila.push(actual);
+                actual = actual.izq;
+            }
+            actual = pila.pop();
+            lista.add(actual.paciente);
+            actual = actual.der;
+        }
+
+        return lista;
+    }//In-Order
+}
