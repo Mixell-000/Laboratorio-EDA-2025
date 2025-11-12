@@ -49,3 +49,95 @@ public int compareTo(Paciente o) {
 
 } //La clase Paciente debe implementar la interfaz Comparable<Paciente>
 
+class ColaPrioridadPacientes {
+
+    // Atributos
+Paciente[] pacientes;
+int tamano;
+
+    // Constructor
+ColaPrioridadPacientes(int capacidadInicial) {
+        pacientes = new Paciente[capacidadInicial];
+        tamano = 0;
+}
+
+void insertar(Paciente p) {
+        if (tamano == pacientes.length) {
+            Paciente[] nuevo = new Paciente[pacientes.length * 2];
+            for (int i = 0; i < pacientes.length; i++) {
+                nuevo[i] = pacientes[i];
+            }
+            pacientes = nuevo;
+        }
+
+
+        pacientes[tamano] = p;
+
+
+        int i = tamano;
+        while (i > 0) {
+            int padre = (i - 1) / 2;
+            if (pacientes[i].compareTo(pacientes[padre]) < 0) {
+                Paciente temp = pacientes[i];
+                pacientes[i] = pacientes[padre];
+                pacientes[padre] = temp;
+                i = padre;
+            } else {
+                break;
+            }
+        }
+
+        tamano++;
+    }
+
+
+    Paciente extraerMin() {
+        if (estaVacia()) return null;
+
+        Paciente min = pacientes[0];
+        pacientes[0] = pacientes[tamano - 1];
+        tamano--;
+
+
+        int i = 0;
+        while (true) {
+            int izq = 2 * i + 1;
+            int der = 2 * i + 2;
+            int menor = i;
+
+            if (izq < tamano && pacientes[izq].compareTo(pacientes[menor]) < 0) {
+                menor = izq;
+            }
+            if (der < tamano && pacientes[der].compareTo(pacientes[menor]) < 0) {
+                menor = der;
+            }
+
+            if (menor != i) {
+                Paciente temp = pacientes[i];
+                pacientes[i] = pacientes[menor];
+                pacientes[menor] = temp;
+                i = menor;
+            } else {
+                break;
+            }
+        }
+
+        return min;
+    }
+
+
+    Paciente obtenerMin() {
+        if (estaVacia()) return null;
+        return pacientes[0];
+    }
+
+
+    boolean estaVacia() {
+        if(tamano == 0){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+}
