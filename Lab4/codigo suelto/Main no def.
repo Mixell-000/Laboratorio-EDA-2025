@@ -1,9 +1,6 @@
 import java.util.*;
 import java.io.*;
 
-import java.util.*;
-import java.io.*;
-
 class Paciente implements Comparable<Paciente> {
 	// atributos
 	String id;
@@ -126,7 +123,7 @@ class ColaPrioridadPacientes {
 	}
 }
 
-class HashPacientesEncadenado implements Map<String, Paciente> {
+class HashPacientesEncadenado {
 
 	// Atributos
 	LinkedList<Map.Entry<String, Paciente>>[] tabla;
@@ -208,7 +205,7 @@ class HashPacientesEncadenado implements Map<String, Paciente> {
 
 }
 
-class HashPacientesSondeoLineal implements Map<String, Paciente> {
+class HashPacientesSondeoLineal {
 
 	Paciente[] tabla;
 	int capacidad;
