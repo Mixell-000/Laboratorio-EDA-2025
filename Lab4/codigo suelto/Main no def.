@@ -1,6 +1,6 @@
 
 import java.util.*;
-import java.io.*;
+import java.io
 
 class Paciente implements Comparable<Paciente> {
 	// atributos
@@ -369,4 +369,58 @@ class ArbolPacientes {
 
         return lista;
     }//In-Order
+}
+
+class Hospital {
+
+    // Atributos
+    HashPacientesEncadenado salaEspera;  
+    ArbolPacientes historial;
+    ColaPrioridadPacientes colaAtencion; 
+    
+    int capacidadInicial;
+
+    // Constructor
+    Hospital(int capacidadInicial) {
+        this.capacidadInicial = capacidadInicial;
+        this.salaEspera = new HashPacientesEncadenado(capacidadInicial);
+        this.colaAtencion = new ColaPrioridadPacientes(capacidadInicial);
+        this.historial = new ArbolPacientes();
+    }
+
+    //metodos
+
+    void registrarPaciente(String id, String nombre, int categoria) {
+        long tiempo = System.currentTimeMillis();
+        Paciente p = new Paciente(id, nombre, categoria, tiempo);
+
+        salaEspera.put(id, p);
+        colaAtencion.insertar(p);
+        p.registrarCambio("Registrado en el hospital");
+    }
+
+    Paciente atenderSiguiente() {
+        if (colaAtencion.estaVacia()) {
+            System.out.println("No hay pacientes para atender.");
+            return null;
+        }
+
+        Paciente siguiente = colaAtencion.extraerMin();
+        salaEspera.remove(siguiente.id);
+        historial.insertar(siguiente);
+        siguiente.registrarCambio("Paciente atendido y dado de alta");
+
+        System.out.println("Atendiendo paciente: " + siguiente.nombre + " (ID: " + siguiente.id + ")");
+        return siguiente;
+    }
+
+    Paciente buscarPacienteActivo(String id) {
+        return salaEspera.get(id);
+    }
+
+    Paciente buscarPacienteHistorico(String id) {
+        return historial.buscar(id);
+    }
+
+
 }
