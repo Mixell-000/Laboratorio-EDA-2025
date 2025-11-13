@@ -1,1 +1,425 @@
 
+
+import java.util.*;
+import java.io.*;
+
+class Paciente implements Comparable<Paciente> {
+	// atributos
+	String id;
+	String nombre;
+	int categoria;
+	long tiempoLlegada;
+	Stack<String> historialCambios = new Stack<>();
+
+	//constructor
+	Paciente(String id,String nombre, int categoria, long tiempoLlegada) {
+		this.id = id;
+		this.nombre = nombre;
+		this.categoria = categoria;
+		this.tiempoLlegada = tiempoLlegada;
+	}
+
+	//metodos
+	void registrarCambio(String descripcion) {
+		historialCambios.push(descripcion + " " + new Date());
+	}
+
+	public int compareTo(Paciente o) {
+		if (this.categoria != o.categoria) {
+			return this.categoria - o.categoria;
+		}
+		return Long.compare(this.tiempoLlegada, o.tiempoLlegada);
+	}
+} //La clase Paciente debe implementar la interfaz Comparable<Paciente>
+
+class ColaPrioridadPacientes {
+
+	// Atributos
+	Paciente[] pacientes;
+	int tamano;
+
+	// Constructor
+	ColaPrioridadPacientes(int capacidadInicial) {
+		pacientes = new Paciente[capacidadInicial];
+		tamano = 0;
+	}
+
+	void insertar(Paciente p) {
+		if (tamano == pacientes.length) {
+			Paciente[] nuevo = new Paciente[pacientes.length * 2];
+			for (int i = 0; i < pacientes.length; i++) {
+				nuevo[i] = pacientes[i];
+			}
+			pacientes = nuevo;
+		}
+
+
+		pacientes[tamano] = p;
+
+
+		int i = tamano;
+		while (i > 0) {
+			int padre = (i - 1) / 2;
+			if (pacientes[i].compareTo(pacientes[padre]) < 0) {
+				Paciente temp = pacientes[i];
+				pacientes[i] = pacientes[padre];
+				pacientes[padre] = temp;
+				i = padre;
+			} else {
+				break;
+			}
+		}
+
+		tamano++;
+	}
+
+
+	Paciente extraerMin() {
+		if (estaVacia()) return null;
+
+		Paciente min = pacientes[0];
+		pacientes[0] = pacientes[tamano - 1];
+		tamano--;
+
+
+		int i = 0;
+		while (true) {
+			int izq = 2 * i + 1;
+			int der = 2 * i + 2;
+			int menor = i;
+
+			if (izq < tamano && pacientes[izq].compareTo(pacientes[menor]) < 0) {
+				menor = izq;
+			}
+			if (der < tamano && pacientes[der].compareTo(pacientes[menor]) < 0) {
+				menor = der;
+			}
+
+			if (menor != i) {
+				Paciente temp = pacientes[i];
+				pacientes[i] = pacientes[menor];
+				pacientes[menor] = temp;
+				i = menor;
+			} else {
+				break;
+			}
+		}
+
+		return min;
+	}
+
+
+	Paciente obtenerMin() {
+		if (estaVacia()) return null;
+		return pacientes[0];
+	}
+
+
+	boolean estaVacia() {
+		if(tamano == 0) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+}
+
+class HashPacientesEncadenado {
+
+	// Atributos
+	LinkedList<Map.Entry<String, Paciente>>[] tabla;
+	int capacidad;
+	int tamano;
+
+	// Constructor
+	HashPacientesEncadenado(int capacidad) {
+		this.capacidad = capacidad;
+		this.tamano = 0;
+		tabla = new LinkedList[capacidad];
+		for (int i = 0; i < capacidad; i++) {
+			tabla[i] = new LinkedList<>();
+		}
+	}
+
+	// metodos
+
+	public Paciente put(String id, Paciente p) {
+		int indice = Math.abs(id.hashCode() % capacidad);
+		LinkedList<Map.Entry<String, Paciente>> lista = tabla[indice];
+
+		for (Map.Entry<String, Paciente> e : lista) {
+			if (e.getKey().equals(id)) {
+				Paciente anterior = e.getValue();
+				((AbstractMap.SimpleEntry<String, Paciente>) e).setValue(p);
+				return anterior;
+			}
+		}
+
+		lista.add(new AbstractMap.SimpleEntry<>(id, p));
+		tamano++;
+		return null;
+	}
+
+	public Paciente get(Object id) {
+		if (!(id instanceof String)) return null;
+		int indice = Math.abs(((String) id).hashCode() % capacidad);
+		LinkedList<Map.Entry<String, Paciente>> lista = tabla[indice];
+
+		for (Map.Entry<String, Paciente> e : lista) {
+			if (e.getKey().equals(id)) {
+				return e.getValue();
+			}
+		}
+		return null;
+	}
+
+	public Paciente remove(Object id) {
+		if (!(id instanceof String)) return null;
+		int indice = Math.abs(((String) id).hashCode() % capacidad);
+		LinkedList<Map.Entry<String, Paciente>> lista = tabla[indice];
+
+		Iterator<Map.Entry<String, Paciente>> it = lista.iterator();
+		while (it.hasNext()) {
+			Map.Entry<String, Paciente> e = it.next();
+			if (e.getKey().equals(id)) {
+				Paciente eliminado = e.getValue();
+				it.remove();
+				tamano--;
+				return eliminado;
+			}
+		}
+		return null;
+	}
+
+	public int size() {
+		return tamano;
+	}
+	public boolean isEmpty() {
+		return tamano == 0;
+	}
+	public boolean containsKey(Object key) {
+		return get(key) != null;
+
+	}
+
+}
+
+class HashPacientesSondeoLineal {
+
+	Paciente[] tabla;
+	int capacidad;
+	int tamano;
+
+	HashPacientesSondeoLineal(int capacidad) {
+		this.capacidad = capacidad;
+		tabla = new Paciente[capacidad];
+		tamano = 0;
+	}
+
+	public Paciente put(String id, Paciente p) {
+		int indice = Math.abs(id.hashCode() % capacidad);
+		int inicio = indice;
+
+		while (tabla[indice] != null) {
+			if (tabla[indice].id.equals(id)) {
+				Paciente anterior = tabla[indice];
+				tabla[indice] = p;
+				return anterior;
+			}
+			indice = (indice + 1) % capacidad;
+			if (indice == inicio) return null;
+		}
+
+		tabla[indice] = p;
+		tamano++;
+		return null;
+	}
+
+	public Paciente get(Object key) {
+		if (!(key instanceof String)) return null;
+		String id = (String) key;
+		int indice = Math.abs(id.hashCode() % capacidad);
+		int inicio = indice;
+
+		while (tabla[indice] != null) {
+			if (tabla[indice].id.equals(id)) {
+				return tabla[indice];
+			}
+			indice = (indice + 1) % capacidad;
+			if (indice == inicio) break;
+		}
+
+		return null;
+	}
+
+	public Paciente remove(Object key) {
+		if (!(key instanceof String)) return null;
+		String id = (String) key;
+		int indice = Math.abs(id.hashCode() % capacidad);
+		int inicio = indice;
+
+		while (tabla[indice] != null) {
+			if (tabla[indice].id.equals(id)) {
+				Paciente eliminado = tabla[indice];
+				tabla[indice] = null;
+				tamano--;
+
+
+				int i = (indice + 1) % capacidad;
+				while (tabla[i] != null) {
+					Paciente temp = tabla[i];
+					tabla[i] = null;
+					tamano--;
+					put(temp.id, temp);
+					i = (i + 1) % capacidad;
+				}
+
+				return eliminado;
+			}
+			indice = (indice + 1) % capacidad;
+			if (indice == inicio) break;
+		}
+
+		return null;
+	}
+
+	public int size() {
+		return tamano;
+	}
+	public boolean isEmpty() {
+		return tamano == 0;
+	}
+	public boolean containsKey(Object key) {
+		return get(key) != null;
+	}
+
+
+}
+
+class ArbolPacientes {
+
+    class NodoArbol {
+        Paciente paciente;
+        NodoArbol izq, der;
+
+        NodoArbol(Paciente p) {
+            this.paciente = p;
+        }
+    } // clase interna para el nodo
+    
+    //atributo
+
+    NodoArbol raiz;
+
+    //metodos
+
+    void insertar(Paciente p) {
+        if (raiz == null) {
+            raiz = new NodoArbol(p);
+            return;
+        }
+
+        NodoArbol actual = raiz;
+        while (true) {
+            if (p.id.compareTo(actual.paciente.id) < 0) {
+                if (actual.izq == null) {
+                    actual.izq = new NodoArbol(p);
+                    break;
+                }
+                actual = actual.izq;
+            } else if (p.id.compareTo(actual.paciente.id) > 0) {
+                if (actual.der == null) {
+                    actual.der = new NodoArbol(p);
+                    break;
+                }
+                actual = actual.der;
+            } else {
+                break;
+            }
+        }
+    }
+
+    Paciente buscar(String id) {
+        NodoArbol n = raiz;
+        while (n != null) {
+            int a = id.compareTo(n.paciente.id);
+            if (a == 0) return n.paciente;
+            else if (a < 0) n = n.izq;
+            else n = n.der;
+        }
+        return null;
+    }
+
+    List<Paciente> obtenerPacientesEnOrden() {
+        List<Paciente> lista = new ArrayList<>();
+        Stack<NodoArbol> pila = new Stack<>();
+        NodoArbol actual = raiz;
+
+        while (actual != null || !pila.isEmpty()) {
+            while (actual != null) {
+                pila.push(actual);
+                actual = actual.izq;
+            }
+            actual = pila.pop();
+            lista.add(actual.paciente);
+            actual = actual.der;
+        }
+
+        return lista;
+    }//In-Order
+}
+
+class Hospital {
+
+    // Atributos
+    HashPacientesEncadenado salaEspera;  
+    ArbolPacientes historial;
+    ColaPrioridadPacientes colaAtencion; 
+    
+    int capacidadInicial;
+
+    // Constructor
+    Hospital(int capacidadInicial) {
+        this.capacidadInicial = capacidadInicial;
+        this.salaEspera = new HashPacientesEncadenado(capacidadInicial);
+        this.colaAtencion = new ColaPrioridadPacientes(capacidadInicial);
+        this.historial = new ArbolPacientes();
+    }
+
+    //metodos
+
+    void registrarPaciente(String id, String nombre, int categoria) {
+        long tiempo = System.currentTimeMillis();
+        Paciente p = new Paciente(id, nombre, categoria, tiempo);
+
+        salaEspera.put(id, p);
+        colaAtencion.insertar(p);
+        p.registrarCambio("Registrado en el hospital");
+    }
+
+    Paciente atenderSiguiente() {
+        if (colaAtencion.estaVacia()) {
+            System.out.println("No hay pacientes para atender.");
+            return null;
+        }
+
+        Paciente siguiente = colaAtencion.extraerMin();
+        salaEspera.remove(siguiente.id);
+        historial.insertar(siguiente);
+        siguiente.registrarCambio("Paciente atendido y dado de alta");
+
+        System.out.println("Atendiendo paciente: " + siguiente.nombre + " (ID: " + siguiente.id + ")");
+        return siguiente;
+    }
+
+    Paciente buscarPacienteActivo(String id) {
+        return salaEspera.get(id);
+    }
+
+    Paciente buscarPacienteHistorico(String id) {
+        return historial.buscar(id);
+    }
+
+
+}
