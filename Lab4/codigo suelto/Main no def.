@@ -1,3 +1,4 @@
+
 import java.util.*;
 import java.io.*;
 
@@ -159,7 +160,6 @@ class HashPacientesEncadenado {
 		return null;
 	}
 
-
 	public Paciente get(Object id) {
 		if (!(id instanceof String)) return null;
 		int indice = Math.abs(((String) id).hashCode() % capacidad);
@@ -172,7 +172,6 @@ class HashPacientesEncadenado {
 		}
 		return null;
 	}
-
 
 	public Paciente remove(Object id) {
 		if (!(id instanceof String)) return null;
@@ -422,4 +421,58 @@ class Hospital {
     }
 
 
+}
+
+
+public class Main {
+
+    public static void main(String[] args) {
+    experimentoColaPrioridad();
+
+}
+
+    static void experimentoColaPrioridad() {
+
+        System.out.println("EXPERIMENTO 1");
+
+        int[] tamanos = {10000, 30000, 50000, 75000, 100000, 175000, 250000, 500000, 750000, 1000000};
+
+        System.out.printf("%-12s %-20s %-20s\n", "N", "Tiempo Inserción (ms)", "Tiempo Extracción (ms)");
+
+        for (int N : tamanos) {
+
+            ColaPrioridadPacientes monton = new ColaPrioridadPacientes(N);
+
+            // ----- Generación de pacientes -----
+            Paciente[] lista = new Paciente[N];
+            Random r = new Random();
+
+            for (int i = 0; i < N; i++) {
+                String id = "P" + i;
+                String nombre = "Paciente_" + i;
+                int categoria = r.nextInt(5) + 1;
+                long tiempo = System.currentTimeMillis();
+                lista[i] = new Paciente(id, nombre, categoria, tiempo);
+            }
+
+            // ----- Tiempo de inserción -----
+long inicioInsercion = System.nanoTime();
+for (Paciente p : lista) {
+    monton.insertar(p);
+}
+long finInsercion = System.nanoTime();
+double tiempoInsercion = (finInsercion - inicioInsercion) / 1_000_000.0;
+            // ----- Tiempo de extracción -----
+long inicioExtraccion = System.nanoTime();
+while (!monton.estaVacia()) {
+    monton.extraerMin();
+}
+long finExtraccion = System.nanoTime();
+double tiempoExtraccion = (finExtraccion - inicioExtraccion) / 1_000_000.0;
+
+            // ----- Resultados -----
+System.out.printf("%-12d %-20.3f %-20.3f\n",
+        N, tiempoInsercion, tiempoExtraccion);
+        }
+    }
 }
