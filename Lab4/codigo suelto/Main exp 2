@@ -1,0 +1,79 @@
+public class Main {
+
+    public static void main(String[] args) {
+        experimentoHashTablas();
+    }
+
+static void experimentoHashTablas() {
+    System.out.println("\nEXPERIMENTO 2: ANÁLISIS DE TABLAS HASH:");
+
+    int M = 10007;
+    int incremento = 1000;
+    int maxN = 9000;
+
+    System.out.printf("%-10s %-20s %-20s %-20s %-20s\n", 
+        "N", "Encadenamiento Ins", "SondeoLineal Ins", "Encadenamiento Bus", "SondeoLineal Bus");
+
+    HashPacientesEncadenado tablaEncadenada = new HashPacientesEncadenado(M);
+    HashPacientesSondeoLineal tablaSondeo = new HashPacientesSondeoLineal(M);
+
+    Random random = new Random(42);
+    
+    // lista para mantener todos los pacientes insertados (para las búsquedas)
+    List<Paciente> todosLosPacientes = new ArrayList<>();
+
+    for (int N = incremento; N <= maxN; N += incremento) {
+        // generar 1000 pacientes nuevos
+        Paciente[] nuevosPacientes = new Paciente[incremento];
+        for (int i = 0; i < incremento; i++) {
+            int index = todosLosPacientes.size() + i; // Índice único continuo
+            String id = "P" + index;
+            String nombre = "Paciente_" + index;
+            int categoria = random.nextInt(5) + 1;
+            nuevosPacientes[i] = new Paciente(id, nombre, categoria, System.currentTimeMillis());
+        }
+
+        // MEDICION DE INSERCION
+        
+        // medir insercion encadenamiento (solo los nuevos)
+        long inicioInsEncadenada = System.nanoTime();
+        for (Paciente p : nuevosPacientes) {
+            tablaEncadenada.put(p.id, p);
+        }
+        long finInsEncadenada = System.nanoTime();
+        double tiempoInsEncadenada = (finInsEncadenada - inicioInsEncadenada) / 1_000_000.0;
+
+        // medir insercion sondeo lineal (solo los nuevos)
+        long inicioInsSondeo = System.nanoTime();
+        for (Paciente p : nuevosPacientes) {
+            tablaSondeo.put(p.id, p);
+        }
+        long finInsSondeo = System.nanoTime();
+        double tiempoInsSondeo = (finInsSondeo - inicioInsSondeo) / 1_000_000.0;
+
+        Collections.addAll(todosLosPacientes, nuevosPacientes);
+
+        //  MEDICIÓN DE BÚSQUEDA
+        
+        // medir busqueda encadenamiento (todos los pacientes)
+        long inicioBusEncadenada = System.nanoTime();
+        for (Paciente p : todosLosPacientes) {
+            tablaEncadenada.get(p.id);
+        }
+        long finBusEncadenada = System.nanoTime();
+        double tiempoBusEncadenada = (finBusEncadenada - inicioBusEncadenada) / 1_000_000.0;
+
+        // medir búsqueda sondeo lineal
+        long inicioBusSondeo = System.nanoTime();
+        for (Paciente p : todosLosPacientes) {
+            tablaSondeo.get(p.id);
+        }
+        long finBusSondeo = System.nanoTime();
+        double tiempoBusSondeo = (finBusSondeo - inicioBusSondeo) / 1_000_000.0;
+        
+        // mostrar resultados
+        System.out.printf("%-10d %-20.3f %-20.3f %-20.3f %-20.3f\n",
+            N, tiempoInsEncadenada, tiempoInsSondeo, tiempoBusEncadenada, tiempoBusSondeo);
+        }
+    }
+}
