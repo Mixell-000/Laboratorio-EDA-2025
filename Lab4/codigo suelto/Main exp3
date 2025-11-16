@@ -1,0 +1,108 @@
+public class Main {
+
+    public static void main(String[] args) {
+        experimentoHash_BST();
+    }
+
+    static void experimentoHash_BST() {
+        System.out.println("\nEXPERIMENTO 3: HASH TABLE vs BST:");
+
+        int M = 10007;
+        int k = 10000;
+        int[] tamanos = {10000, 50000, 100000, 500000, 1000000};
+
+        System.out.printf("%-10s %-15s %-15s %-15s %-15s %-15s\n",
+                "N", "Hash Ins", "BST Prom Ins", "BST Peor Ins", "Hash Bus", "BST Prom Bus", "BST Peor Bus");
+
+        Random random = new Random(42);
+
+        for (int N : tamanos) {
+
+            //PREPARACION CASO PROMEDIO
+
+            HashPacientesEncadenado hashTable = new HashPacientesEncadenado(M);
+            ArbolPacientes bstPromedio = new ArbolPacientes();
+
+            Paciente[] pacientesAleatorios = new Paciente[N];
+            Set<String> idsUsados = new HashSet<>(); // Para evitar duplicados
+
+            for (int i = 0; i < N; i++) {
+                String id;
+                do {
+                    id = "P" + random.nextInt(10000000); // IDs aleatorios grandes
+                } while (idsUsados.contains(id));
+                idsUsados.add(id);
+
+                pacientesAleatorios[i] = new Paciente(id, "Paciente_" + i, random.nextInt(5) + 1, System.currentTimeMillis());
+            }
+
+            //MEDICION CASO PROMEDIO
+
+            //Insercion Hash Table
+            long inicioHashIns = System.nanoTime();
+            for (Paciente p : pacientesAleatorios) {
+                hashTable.put(p.id, p);
+            }
+            long finHashIns = System.nanoTime();
+            double tiempoHashIns = (finHashIns - inicioHashIns) / 1_000_000.0;
+
+            //Insercion BST Promedio
+            long inicioBSTPromIns = System.nanoTime();
+            for (Paciente p : pacientesAleatorios) {
+                bstPromedio.insertar(p);
+            }
+            long finBSTPromIns = System.nanoTime();
+            double tiempoBSTPromIns = (finBSTPromIns - inicioBSTPromIns) / 1_000_000.0;
+
+            //Busqueda Hash Table
+            long inicioHashBus = System.nanoTime();
+            for (int i = 0; i < k; i++) {
+                int index = random.nextInt(N);
+                hashTable.get(pacientesAleatorios[index].id);
+            }
+            long finHashBus = System.nanoTime();
+            double tiempoHashBus = (finHashBus - inicioHashBus) / 1_000_000.0;
+
+            //Busqueda BST Promedio
+
+            long inicioBSTPromBus = System.nanoTime();
+            for (int i = 0; i < k; i++) {
+                int index = random.nextInt(N);
+                bstPromedio.buscar(pacientesAleatorios[index].id);
+            }
+            long finBSTPromBus = System.nanoTime();
+            double tiempoBSTPromBus = (finBSTPromBus - inicioBSTPromBus) / 1_000_000.0;
+
+            ArbolPacientes bstPeorCaso = new ArbolPacientes();
+
+            Paciente[] pacientesOrdenados = new Paciente[N];
+            for (int i = 0; i < N; i++) {
+                String id = String.format("RUT-%08d", i);
+                pacientesOrdenados[i] = new Paciente(id, "PacienteOrd_" + i, random.nextInt(5) + 1, System.currentTimeMillis());
+            }
+
+            //MEDICION PEOR CASO BST
+
+            long inicioBSTPeorIns = System.nanoTime();
+            for (Paciente p : pacientesOrdenados) {
+                bstPeorCaso.insertar(p);
+            }
+            long finBSTPeorIns = System.nanoTime();
+            double tiempoBSTPeorIns = (finBSTPeorIns - inicioBSTPeorIns) / 1_000_000.0;
+
+            //Busqueda BST Peor Caso
+            long inicioBSTPeorBus = System.nanoTime();
+            for (int i = 0; i < k; i++) {
+                int index = random.nextInt(N);
+                bstPeorCaso.buscar(pacientesOrdenados[index].id);
+            }
+            long finBSTPeorBus = System.nanoTime();
+            double tiempoBSTPeorBus = (finBSTPeorBus - inicioBSTPeorBus) / 1_000_000.0;
+
+            //mostrar resultados
+            System.out.printf("%-10d %-15.3f %-15.3f %-15.3f %-15.3f %-15.3f %-15.3f\n",
+                    N, tiempoHashIns, tiempoBSTPromIns, tiempoBSTPeorIns,
+                    tiempoHashBus, tiempoBSTPromBus, tiempoBSTPeorBus);
+        }
+    }
+}
