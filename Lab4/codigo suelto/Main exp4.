@@ -1,0 +1,107 @@
+public class Main {
+
+    static Random rnd = new Random(42); // Semilla 42
+
+    public static void main(String[] args) {
+
+        System.out.println(" 1 - 1 - 1 ");
+        simulacionDiaHospital(1);
+
+        System.out.println(" 2 - 2 - 2 ");
+        simulacionDiaHospital(2);
+    }
+
+    static void simulacionDiaHospital(int escenario) {
+
+        int capacidad = 10007;
+        Hospital hospital = new Hospital(capacidad);
+
+        int intervaloLlegada = (escenario == 1) ? 10 : 8; 
+        int intervaloAtencion = 15; 
+
+
+        int[] atendidosCat = new int[6];
+        int[] enEsperaCat = new int[6];
+        long[] esperaTotalCat = new long[6];
+        int[] contEsperaCat = new int[6];
+
+        int contadorPacientes = 0;
+
+        // minuto a minuto
+        for (int t = 0; t <= 1440; t++) {
+
+            if (t % intervaloLlegada == 0) {
+                int categoria = generarCategoria();
+                String id = "P" + contadorPacientes;
+                String nombre = "Paciente_" + contadorPacientes;
+                Paciente p = new Paciente(id, nombre, categoria, t);
+
+                hospital.salaEspera.put(id, p);
+                hospital.colaAtencion.insertar(p);
+
+                contadorPacientes++;
+            }
+
+            if (t % intervaloAtencion == 0) {
+
+                Paciente atendido = hospital.colaAtencion.extraerMin();
+                if (atendido != null) {
+
+                    hospital.salaEspera.remove(atendido.id);
+                    hospital.historial.insertar(atendido);
+
+                    long espera = t - atendido.tiempoLlegada;
+
+                    if (atendido.categoria >= 1 && atendido.categoria <= 5) {
+                        atendidosCat[atendido.categoria]++;
+                        esperaTotalCat[atendido.categoria] += espera;
+                        contEsperaCat[atendido.categoria]++;
+                    }
+                }
+            }
+        }
+
+        // Recorremos la tabla de encadenamiento para contar los que quedaron en sala de espera
+        for (int i = 0; i < hospital.salaEspera.capacidad; i++) {
+            LinkedList<Map.Entry<String, Paciente>> lista = hospital.salaEspera.tabla[i];
+            if (lista == null) continue;
+            for (Map.Entry<String, Paciente> entry : lista) {
+                Paciente p = entry.getValue();
+                if (p != null && p.categoria >= 1 && p.categoria <= 5) {
+                    enEsperaCat[p.categoria]++;
+                }
+            }
+        }
+
+
+        System.out.println("\n--- RESULTADOS ESCENARIO " + escenario + " ---");
+
+        System.out.println("\nPacientes atendidos por categoría:");
+        for (int c = 1; c <= 5; c++) {
+            System.out.println("C" + c + ": " + atendidosCat[c]);
+        }
+
+        System.out.println("\nPacientes en espera al final:");
+        for (int c = 1; c <= 5; c++) {
+            System.out.println("C" + c + ": " + enEsperaCat[c]);
+        }
+
+        System.out.println("\nTiempos de espera promedio por categoría:");
+        for (int c = 1; c <= 5; c++) {
+            if (contEsperaCat[c] > 0)
+                System.out.println("C" + c + ": " + (esperaTotalCat[c] / contEsperaCat[c]) + " min");
+            else
+                System.out.println("C" + c + ": (sin datos)");
+        }
+    }
+
+    static int generarCategoria() {
+        int x = rnd.nextInt(100);
+
+        if (x < 10) return 1;          // 10%
+        else if (x < 25) return 2;     // 15%
+        else if (x < 43) return 3;     // 18%
+        else if (x < 70) return 4;     // 27%
+        else return 5;                 // 30%
+    }
+}
