@@ -9,14 +9,14 @@ public class Main {
 
         int M = 10007;
         int k = 10000;
-        int[] tamanos = {10000, 50000, 100000, 500000, 1000000};
+        int[] tamaños = {10000, 50000, 100000, 500000, 1000000};
 
         System.out.printf("%-10s %-15s %-15s %-15s %-15s %-15s\n",
                 "N", "Hash Ins", "BST Prom Ins", "BST Peor Ins", "Hash Bus", "BST Prom Bus", "BST Peor Bus");
 
         Random random = new Random(42);
 
-        for (int N : tamanos) {
+        for (int N : tamaños) {
 
             //PREPARACION CASO PROMEDIO
 
